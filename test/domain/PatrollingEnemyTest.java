@@ -13,7 +13,7 @@ public class PatrollingEnemyTest {
 	@BeforeEach
 	public void setUp() {
 		board = new Board();
-		board.level1(Color.WHITE);
+		board.level1(Color.WHITE, null, false);
 		enemy = new PatrollingEnemy(5,5,2,10,2,10);
 		enemy.setBoard(board);
 		iceCream = new IceCream(15,15,Color.WHITE);

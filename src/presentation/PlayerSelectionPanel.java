@@ -18,7 +18,7 @@ public class PlayerSelectionPanel extends JPanel{
 	
 	private void prepareElements() {
 		setBackground(new Color(200, 220, 255));
-		setPreferredSize(new Dimension(600, 400));
+		setPreferredSize(new Dimension(600, 550));
 	}
 	
 	private void prepareActions() {
@@ -33,22 +33,21 @@ public class PlayerSelectionPanel extends JPanel{
 	private void handleClick(int x, int y) {
 		if(gameMode.equals("PvP")) {
 			// JUGADOR1
-			if(x >=100 && x <=170 && y>= 150 && y<=220) {
+			if(x >=100 && x <=170 && y>= 150 && y<=190) {
 				selectedColorP1 = Color.WHITE;
 				repaint();
 				return;
 			}
-			if(x >= 225 && x <=295 && y>= 150 && y<=220) {
+			if(x >= 225 && x <=295 && y>= 150 && y<=190) {
 				selectedColorP1 = Color.PINK;
 				repaint();
 				return;
 			}
-			if(x >=350 && x <=420 && y>= 150 && y<= 220) {
+			if(x >=350 && x <=420 && y>= 150 && y<= 190) {
 				selectedColorP1 = new Color(139, 69, 19);
 				repaint();
 				return;
 			}
-		}
 		
 		//JUGADOR2
 		
@@ -77,8 +76,24 @@ public class PlayerSelectionPanel extends JPanel{
 		  if(x >= 200 && x <= 400 && y >= 420 && y <= 470){
 	            mainWindow.startGameWithColor(1, gameMode, selectedColorP1, selectedColorP2);
 	        }
+		} else {
+			// Modo un jugador
+			// Vanilla
+			if(x >= 150 && x <= 220 && y >= 200 && y <= 270) {
+				mainWindow.startGameWithColor(1, gameMode, Color.WHITE, Color.PINK);
+			}
+			// Strawberry
+			if(x >= 265 && x <= 335 && y >= 200 && y <= 270) {
+				mainWindow.startGameWithColor(1, gameMode, Color.PINK, Color.WHITE);
+			}
+			// Chocolate
+			if(x >= 380 && x <= 450 && y >= 200 && y <= 270) {
+				mainWindow.startGameWithColor(1, gameMode, new Color(139, 69, 19), Color.PINK);
+			}
+		}
 	}
 	
+		
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -141,18 +156,17 @@ public class PlayerSelectionPanel extends JPanel{
 	}
 	
 	private void drawSinglePlayerSelection(Graphics2D g2d) {
-		int titleY = 50;
 		
 		// Título
 		g2d.setFont(new Font("Arial", Font.BOLD, 25));
 		g2d.setColor(Color.BLACK);
 		String stepText = "Choose your ice cream";
-		g2d.drawString(stepText, 140, titleY);
+		g2d.drawString(stepText, 140, 80);
 		
 		// Opciones
-		drawIceCreamOption(g2d, 150, 300, Color.WHITE, "Vanilla", false);
-		drawIceCreamOption(g2d, 275, 300, Color.PINK, "Strawberry", false);
-		drawIceCreamOption(g2d, 400, 300, new Color(139, 69, 19), "Chocolate", false);
+		drawIceCreamOption(g2d, 135, 185, Color.WHITE, "Vanilla", false);
+		drawIceCreamOption(g2d, 250, 185, Color.PINK, "Strawberry", false);
+		drawIceCreamOption(g2d, 335, 185, new Color(139, 69, 19), "Chocolate", false);
 	}
 	
 	private void drawIceCreamOption(Graphics2D g2d, int x, int y, Color color, String name, boolean selected) {

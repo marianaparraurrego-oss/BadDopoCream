@@ -55,18 +55,36 @@ public class IceCream implements BreakIce{
 	 */
 	public Block shootIce() {
 		int blockX = gridX;
-		int blockY = gridY;
-		
-		switch(direction) {
-			case 0: blockY--; break; //Arriba
-			case 1: blockX++; break; //Derecha
-			case 2: blockY++; break; //Abajo
-			case 3: blockX--; break; //Izquierda
-		}
-		
-		board.setBlock(blockX, blockY);
-		return new Block(blockX, blockY);
-		
+	    int blockY = gridY;
+	    Block lastBlock = null;
+	    
+	    // Avanzar en la dirección actual
+	    while(true) {
+	        // Calcular siguiente posición
+	        switch(direction) {
+	            case 0: blockY--; break; // Arriba
+	            case 1: blockX++; break; // Derecha
+	            case 2: blockY++; break; // Abajo
+	            case 3: blockX--; break; // Izquierda
+	        }
+	        
+	        // Verificar límites del tablero
+	        if(blockX < 0 || blockX >= board.getCols() || 
+	           blockY < 0 || blockY >= board.getRows()) {
+	            break; // Salir si está fuera del tablero
+	        }
+	        
+	        // Si ya hay un bloque, detenerse
+	        if(board.hasBlock(blockX, blockY)) {
+	            break;
+	        }
+	        
+	        // Crear el bloque
+	        board.setBlock(blockX, blockY);
+	        lastBlock = new Block(blockX, blockY);
+	    }
+	    
+	    return lastBlock;
 	}
 	/**
 	 * Rompe bloques

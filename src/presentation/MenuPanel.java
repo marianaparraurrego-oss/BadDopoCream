@@ -73,9 +73,9 @@ public class MenuPanel extends JPanel{
 		
 		//Buttons
 		drawButton(g2d, 150, 150, 300, 60, "Player ", selectedMode.equals("Player"));
-		drawButton(g2d, 150, 150, 300, 60, "PvP", selectedMode.equals("PvP"));
-		drawButton(g2d, 150, 250, 300, 60, "PvM", selectedMode.equals("PvM"));
-		drawButton(g2d, 150, 350, 300, 60, "MvM", selectedMode.equals("MvM"));
+		drawButton(g2d, 150, 230, 300, 60, "PvP", selectedMode.equals("PvP"));
+		drawButton(g2d, 150, 310, 300, 60, "PvM", selectedMode.equals("PvM"));
+		drawButton(g2d, 150, 390, 300, 60, "MvM", selectedMode.equals("MvM"));
 		
 		//Instructions
 		g2d.setFont(new Font("Arial", Font.ITALIC, 14));

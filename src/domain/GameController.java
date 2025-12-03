@@ -66,7 +66,6 @@ public class GameController {
 	private void setupLevel1() {
 		// Enemigos (aparecen desde el inicio)
 		board.addEnemy(new PatrollingEnemy(2, 2, 1, board.getCols()-2, 1, board.getRows()-2));
-		board.addEnemy(new Pot(10, 2));
 		
 		// Obstáculos
 		board.addBonfire(new Bonfire(12, 8));
@@ -104,19 +103,6 @@ public class GameController {
 				board.addFruit(new Banana(pos[0], pos[1]));
 			}
 			
-			Cherry cherry1 = new Cherry(8, 10);
-			cherry1.setBoard(board);
-			board.addFruit(cherry1);
-			
-			Cherry cherry2 = new Cherry(10, 10);
-			cherry2.setBoard(board);
-			board.addFruit(cherry2);
-			
-			// Agregar Pineapple con referencia al IceCream y Board
-			Pineapple pineapple = new Pineapple(2, 11);
-			pineapple.setIceCream(board.getIceCream());
-			pineapple.setBoard(board);
-			board.addFruit(pineapple);
 		}
 		
 		currentWave++;
@@ -126,6 +112,11 @@ public class GameController {
 	 */
 	public void update() {
 		if(!gameRunning || gamePaused) return;
+		
+		 if(getTimeRemaining() <= 0) {
+		        resetLevel();
+		        return;
+		    }
 		// Actualizar fogatas
 		for(Bonfire bonfire : board.getBonfires()) {
 			bonfire.update();
@@ -166,6 +157,7 @@ public class GameController {
 			if(board.getIceCream().getGridX() == enemy.getGridX() &&
 				board.getIceCream().getGridY() == enemy.getGridY()) {
 				resetLevel();
+				return;
 			}
 		}
 		
@@ -201,7 +193,12 @@ public class GameController {
 			   player.getGridX() == f.getGridX() &&  // ← Usa el jugador pasado como parámetro
 			   player.getGridY() == f.getGridY()) {
 				
-				// ... código de verificación de cactus ...
+				if(f instanceof Cactus) {
+			        Cactus cactus = (Cactus) f;
+			        if(cactus.hasSpikes()) {
+			            continue; // No recolectar si tiene púas
+			        }
+			    }
 				
 				// Calcular puntos según el tipo de fruta
 				int points = 0;
@@ -229,6 +226,7 @@ public class GameController {
 				}
 				
 				board.getFruits().remove(i);
+				fruitsCollected++;
 			}
 		}
 	}
@@ -321,7 +319,10 @@ public class GameController {
 		board = new Board();
 		board.level1(iceCreamColor, iceCreamColor2, gameMode.equals("PvP"));
 		board.getIceCream().setBoard(board);
-		
+		if (gameMode.equals("PvP") || gameMode.equals("PvM")) {
+	        board.getIceCream2().setBoard(board);
+	    }
+
 		setupLevel1();
 	}
 	

@@ -11,7 +11,7 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setUp(){
-        controller = new GameController(1, "PvP", Color.WHITE, false);
+        controller = new GameController(1, "PvP", Color.WHITE, Color.PINK);
     }
 
     @Test

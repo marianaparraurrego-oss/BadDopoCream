@@ -109,7 +109,7 @@ public class GamePanel extends JPanel {
 		}
 		
 		if(keysPressed.contains(KeyEvent.VK_A)) {
-			gameController.movePlayer(3);
+			gameController.movePlayer2(3);
 		}
 	}
 	
@@ -164,6 +164,7 @@ public class GamePanel extends JPanel {
 		//draw GameOver
 		if(!gameController.isGameRunning()) {
 			drawGameOver(g2d);
+			return;
 		}
 	}
 	
@@ -253,6 +254,8 @@ public class GamePanel extends JPanel {
 	private void drawSingleIceCream(Graphics2D g2d, IceCream iceCream, int cellSize) {	
 		int x = iceCream.getGridX() * cellSize;
 		int y = iceCream.getGridY() * cellSize;
+		
+		g2d.setColor(iceCream.getColor());
 		g2d.fillOval(x + 5, y + 5, cellSize - 10, cellSize - 10);
 		g2d.setColor(Color.BLACK);
 		g2d.setStroke(new BasicStroke(2));

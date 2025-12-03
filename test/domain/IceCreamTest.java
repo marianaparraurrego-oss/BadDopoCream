@@ -13,7 +13,7 @@ public class IceCreamTest {
     @BeforeEach
     public void setUp(){
         board = new Board();
-        board.level1(Color.WHITE);
+        board.level1(Color.WHITE, null, false);
         iceCream = new IceCream(5, 5, Color.WHITE);
         iceCream.setBoard(board);
     }

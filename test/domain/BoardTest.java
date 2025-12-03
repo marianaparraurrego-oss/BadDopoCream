@@ -12,7 +12,7 @@ public class BoardTest {
 	@BeforeEach
 	public void setUp() {
 		board= new Board();
-		board.level1(Color.WHITE);
+		board.level1(Color.WHITE, Color.PINK, true);
 	}
 	
 	@Test
