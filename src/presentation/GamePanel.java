@@ -9,13 +9,18 @@ import java.util.Set;
 
 public class GamePanel extends JPanel {
 	private GameController gameController;
+	private MainWindow mainWindow; 
 	private Set<Integer> keysPressed;
 	private long lastSpacePress = 0;
 	private long lastShiftPress = 0;
 	private long spaceDelay = 200;
 	
-	public GamePanel(GameController gameController) {
+	private int enemyMoveCounter = 0;
+	private int enemyMoveDelay = 40;
+	
+	public GamePanel(GameController gameController, MainWindow mainWindow) {
 		this.gameController = gameController;
+		this.mainWindow = mainWindow;
 		this.keysPressed = new HashSet<>();
 		
 		prepareElements();
@@ -40,6 +45,12 @@ public class GamePanel extends JPanel {
 				if(e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					gameController.pauseGame();
 				}
+				
+				// Guardar partida (F5)
+				if(e.getKeyCode() == KeyEvent.VK_F5) {
+					gameController.pauseGame(); 
+					mainWindow.showSavePanel();
+				}
 				//shoot ice jugador 1
 				
 				if(e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -59,10 +70,53 @@ public class GamePanel extends JPanel {
 					}
 				}
 				
+				// Siguiente nivel (solo cuando ganó)
+				if(!gameController.isGameRunning() && gameController.didWin()) {
+					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						if(gameController.getLevel() < 3) {
+							gameController.nextLevel();
+							repaint(); 
+				            requestFocus();
+						} else {
+							mainWindow.returnToMenu();
+						}
+					}
+				}
+			
+				if(!gameController.isGameRunning() && !gameController.didWin()) {
+					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						gameController.resetToLevel1();
+					}
+				}
 			}
+		
 			@Override
 			public void keyReleased(KeyEvent e) {
 				keysPressed.remove(e.getKeyCode());
+			}
+		});
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!gameController.isGameRunning() && gameController.didWin()) {
+					Board board = gameController.getBoard();
+					int buttonY = board.getHeight()/2 + 60;
+					
+					// Botón "Siguiente Nivel"
+					if(gameController.getLevel() < 3) {
+						if(e.getX() >= 100 && e.getX() <= 300 && 
+						   e.getY() >= buttonY && e.getY() <= buttonY + 40) {
+							gameController.nextLevel();
+						}
+					}
+					
+					// Botón "Menú"
+					int menuButtonX = gameController.getLevel() < 3 ? 320 : 150;
+					if(e.getX() >= menuButtonX && e.getX() <= menuButtonX + 200 && 
+					   e.getY() >= buttonY && e.getY() <= buttonY + 40) {
+						mainWindow.returnToMenu();
+					}
+				}
 			}
 		});
 	}
@@ -70,6 +124,13 @@ public class GamePanel extends JPanel {
 	private void startGameLoop() {
 			Timer timer = new Timer(100, e -> {
 				handleInput();
+				
+				enemyMoveCounter++;
+				boolean shouldMoveEnemies = (enemyMoveCounter >= enemyMoveDelay);
+				if(shouldMoveEnemies) {
+					enemyMoveCounter = 0;
+				}
+				
 				gameController.update();
 				repaint();
 			});
@@ -294,6 +355,11 @@ public class GamePanel extends JPanel {
 		
 		g2d.drawString("Time: " + gameController.getTimeRemaining() + "s", 330, hudY);
 		g2d.drawString("Level " + gameController.getLevel(), 450, hudY);
+	
+		g2d.setFont(new Font("Arial", Font.ITALIC, 9));
+		g2d.setColor(Color.DARK_GRAY);
+		g2d.drawString("F5: Save", 10, board.getHeight() + 45);
+	
 	}
 	
 	private void drawPause(Graphics2D g2d) {
@@ -305,14 +371,63 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void drawGameOver(Graphics2D g2d) {
-		g2d.setFont(new Font("Arial", Font.BOLD, 40));
-		g2d.setColor(new Color(0,0,0,150));
-		g2d.fillRect(80, 120, 320 , 140);
-		g2d.setColor(Color.WHITE);
+		Board board = gameController.getBoard();
+		int centerX = board.getWidth() / 2;
+		int centerY = board.getHeight() / 2;
+		
+		// Fondo semi-transparente
+		g2d.setColor(new Color(0, 0, 0, 180));
+		g2d.fillRect(50, centerY - 100, board.getWidth() - 100, 220);
+		
 		if(gameController.didWin()) {
-			g2d.drawString("You Win", 130, 210);
-		}else {
-			g2d.drawString("Game Over", 100, 210);
+			// Victoria
+			g2d.setFont(new Font("Arial", Font.BOLD, 40));
+			g2d.setColor(Color.GREEN);
+			g2d.drawString("¡LEVEL COMPLETE!", centerX - 180, centerY - 40);
+			
+			g2d.setFont(new Font("Arial", Font.BOLD, 24));
+			g2d.setColor(Color.WHITE);
+			
+			if(gameController.getGameMode().equals("PvP")) {
+				g2d.drawString("P1: " + gameController.getScorePlayer1() + 
+				              " | P2: " + gameController.getScorePlayer2(), 
+				              centerX - 100, centerY + 10);
+			} else {
+				g2d.drawString("Score: " + gameController.getScore(), centerX - 60, centerY + 10);
+			}
+			
+			// Botones
+			if(gameController.getLevel() < 3) {
+				drawButton(g2d, 100, centerY + 60, 200, 40, "Next Level", new Color(50, 200, 50));
+				drawButton(g2d, 320, centerY + 60, 200, 40, "Menu", new Color(100, 100, 200));
+			} else {
+				g2d.drawString("¡COMPLETED ALL LEVELS!", centerX - 160, centerY + 40);
+				drawButton(g2d, 150, centerY + 60, 200, 40, "Menu", new Color(100, 100, 200));
+			}
+		} else {
+			// Derrota
+			g2d.setFont(new Font("Arial", Font.BOLD, 40));
+			g2d.setColor(Color.RED);
+			g2d.drawString("GAME OVER", centerX - 140, centerY);
+			
+			g2d.setFont(new Font("Arial", Font.PLAIN, 18));
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("Press ENTER to retry", centerX - 100, centerY + 40);
 		}
 	}
- }
+	
+	private void drawButton(Graphics2D g2d, int x, int y, int width, int height, String text, Color color) {
+		g2d.setColor(color);
+		g2d.fillRoundRect(x, y, width, height, 15, 15);
+		g2d.setColor(Color.BLACK);
+		g2d.setStroke(new BasicStroke(2));
+		g2d.drawRoundRect(x, y, width, height, 15, 15);
+		
+		g2d.setFont(new Font("Arial", Font.BOLD, 16));
+		g2d.setColor(Color.WHITE);
+		FontMetrics fm = g2d.getFontMetrics();
+		int textX = x + (width - fm.stringWidth(text)) / 2;
+		int textY = y + ((height - fm.getHeight()) / 2) + fm.getAscent();
+		g2d.drawString(text, textX, textY);
+	}
+}

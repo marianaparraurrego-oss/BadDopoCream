@@ -39,10 +39,10 @@ public class PatrollingEnemy extends Enemy {
 		int newY = gridY;
 		
 		switch(direction) {
-			case 0: newY--; break; //Arriba
-			case 1: newX++; break; //Derecha
-			case 2: newY++; break; //Abajo
-			case 3: newX--; break; //Izquierda
+			case UP: newY--; break; //Arriba
+			case RIGHT: newX++; break; //Derecha
+			case DOWN: newY++; break; //Abajo
+			case LEFT: newX--; break; //Izquierda
 		}
 		
 		//Validar limites de patrulla
@@ -58,6 +58,16 @@ public class PatrollingEnemy extends Enemy {
 	@Override
 	public String getType() {
 		return "Troll";
+	}
+	@Override
+	public int getAttackRange() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public boolean canAttack() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

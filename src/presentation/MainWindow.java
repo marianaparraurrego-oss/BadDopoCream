@@ -41,20 +41,32 @@ public class MainWindow extends JFrame {
 		getContentPane().removeAll();
 		
 		
-		PlayerSelectionPanel selectionPanel = new PlayerSelectionPanel(this, gameMode);
+		LevelConfigPanel configPanel = new LevelConfigPanel(this, gameMode);
+		add(configPanel);
+		pack();
+		revalidate();
+		repaint();
+		
+	}
+	
+	/**
+	 * Inicia el juego con configuraciones de niveles
+	 */
+	public void startGameWithConfig(String gameMode, LevelConfiguration[] levelConfigs) {
+		getContentPane().removeAll();
+		
+		PlayerSelectionPanel selectionPanel = new PlayerSelectionPanel(this, gameMode, levelConfigs);
 		add(selectionPanel);
 		pack();
 		revalidate();
 		repaint();
-
-		
 	}
 	
-	public void startGameWithColor(int level, String gameMode, Color iceCreamColor, Color iceCreamColor2) {
+	public void startGameWithColor(int level, String gameMode, Color iceCreamColor, Color iceCreamColor2, LevelConfiguration[] levelConfigs) {
 		getContentPane().removeAll();
 		
-		gameController = new GameController(level, gameMode, iceCreamColor, iceCreamColor2);
-		gamePanel = new GamePanel(gameController);
+		gameController = new GameController(level, gameMode, iceCreamColor, iceCreamColor2, levelConfigs);
+		gamePanel = new GamePanel(gameController, this);
 		gamePanel.setPreferredSize(new Dimension(540, 530));
 		
 		add(gamePanel);
@@ -63,6 +75,70 @@ public class MainWindow extends JFrame {
 		repaint();
 		
 		gamePanel.requestFocus();
+	}
+	
+	/**
+	 * Carga una partida desde un GameState
+	 */
+	public void loadGame(GameState state) {
+		getContentPane().removeAll();
+		
+		gameController = new GameController(1, state.getGameMode(),state.getIceCreamColor(), state.getIceCreamColor2(), state.getLevelConfigs());
+		gameController.loadFromState(state);
+		gamePanel = new GamePanel(gameController, this);
+		gamePanel.setPreferredSize(new Dimension(540, 530));
+		
+		add(gamePanel);
+		pack();
+		revalidate();
+		repaint();
+		
+		gamePanel.requestFocus();
+	}
+	
+	/**
+	 * Muestra el panel de guardado
+	 */
+	public void showSavePanel() {
+		if(gameController != null) {
+			getContentPane().removeAll();
+			
+			SaveLoadPanel savePanel = new SaveLoadPanel(this, true);
+			add(savePanel);
+			pack();
+			revalidate();
+			repaint();
+		}
+	}
+	
+	/**
+	 * Muestra el panel de carga
+	 */
+	public void showLoadPanel() {
+		getContentPane().removeAll();
+		
+		SaveLoadPanel loadPanel = new SaveLoadPanel(this, false);
+		add(loadPanel);
+		pack();
+		revalidate();
+		repaint();
+	}
+	
+	public void returnToMenu() {
+		getContentPane().removeAll();
+		
+		menuPanel = new MenuPanel(this);
+		add(menuPanel);
+		pack();
+		revalidate();
+		repaint();
+	}
+	
+	/**
+	 * Obtiene el controlador del juego actual
+	 */
+	public GameController getGameController() {
+		return gameController;
 	}
 	
 	private void exitWithConfirmation() {

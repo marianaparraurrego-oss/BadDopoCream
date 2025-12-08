@@ -11,14 +11,14 @@ public class Cherry extends Fruit {
 	private int teleportInterval = 20000; // 20 segundos
 	private Board board;
 	private Random random;
-	
+	public static final int cherryPoints = 150;
 	/**
 	 * Crea una cereza
 	 * @param gridX
 	 * @param gridY
 	 */
 	public Cherry(int gridX, int gridY) {
-		super(gridX, gridY);
+		super(gridX, gridY, cherryPoints);
 		this.color = Color.RED;
 		this.lastTeleport = System.currentTimeMillis();
 		this.random = new Random();
@@ -68,11 +68,5 @@ public class Cherry extends Fruit {
 		}
 	}
 	
-	/**
-	 * Obtiene el puntaje de la cereza
-	 * @return 150 puntos
-	 */
-	public int getPoints() {
-		return 150;
-	}
+	
 }

@@ -46,16 +46,17 @@ public class Narval extends Enemy implements BreakIce{
         
         // Movimiento durante embestida
         if (isCharging) {
+        	
             int speed = chargeSpeed;
             for (int i = 0; i < speed; i++) {
                 int newX = gridX;
                 int newY = gridY;
                 
                 switch(direction) {
-                    case 0: newY--; break; // Arriba
-                    case 1: newX++; break; // Derecha
-                    case 2: newY++; break; // Abajo
-                    case 3: newX--; break; // Izquierda
+                    case UP: newY--; break; // Arriba
+                    case RIGHT: newX++; break; // Derecha
+                    case DOWN: newY++; break; // Abajo
+                    case LEFT: newX--; break; // Izquierda
                 }
                 
                 // Si hay un bloque, lo rompe
@@ -90,10 +91,10 @@ public class Narval extends Enemy implements BreakIce{
             int newY = gridY;
             
             switch(direction) {
-                case 0: newY--; break;
-                case 1: newX++; break;
-                case 2: newY++; break;
-                case 3: newX--; break;
+                case UP: newY--; break;
+                case RIGHT: newX++; break;
+                case DOWN: newY++; break;
+                case LEFT: newX--; break;
             }
             
             if (board.canMoveTo(newX, newY) && !board.hasBlock(newX, newY)) {
@@ -131,5 +132,17 @@ public class Narval extends Enemy implements BreakIce{
 	 */
 	public boolean isCharging() {
 		return isCharging;
+	}
+
+	@Override
+	public int getAttackRange() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean canAttack() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -6,13 +6,15 @@ import java.awt.Color;
  * No se mueve
  */
 public class Banana extends Fruit {
+	
+	public static final int bananaPoints = 100;
 	/**
 	 * Crea una Banana
 	 * @param gridX posicion x
 	 * @param gridY posicion y
 	 */
 	public Banana(int gridX, int gridY) {
-		super(gridX,gridY);
+		super(gridX,gridY, bananaPoints);
 		this.color = Color.YELLOW;
 	}
 	/**
@@ -26,12 +28,6 @@ public class Banana extends Fruit {
 	@Override
 	public void move() {
 		// banana do not move
-	}
-
-
-	@Override
-	public int getPoints() {
-		return 100;
 	}
 
 }

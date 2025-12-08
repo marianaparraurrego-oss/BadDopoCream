@@ -1,17 +1,20 @@
 package presentation;
 
+import domain.LevelConfiguration;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 public class PlayerSelectionPanel extends JPanel{
 	private MainWindow mainWindow;
 	private String gameMode;
+	private LevelConfiguration[] levelConfigs;
 	private Color selectedColorP1 = Color.WHITE;
 	private Color selectedColorP2  = Color.PINK;
 	
-	public PlayerSelectionPanel(MainWindow mainWindow, String gameMode) {
+	public PlayerSelectionPanel(MainWindow mainWindow, String gameMode, LevelConfiguration[] levelConfigs) {
 		this.mainWindow = mainWindow;
 		this.gameMode = gameMode;
+		this.levelConfigs = levelConfigs;
 		prepareElements();
 		prepareActions();
 	}
@@ -74,21 +77,21 @@ public class PlayerSelectionPanel extends JPanel{
 		
 		//Start
 		  if(x >= 200 && x <= 400 && y >= 420 && y <= 470){
-	            mainWindow.startGameWithColor(1, gameMode, selectedColorP1, selectedColorP2);
+	            mainWindow.startGameWithColor(1, gameMode, selectedColorP1, selectedColorP2, levelConfigs);
 	        }
 		} else {
 			// Modo un jugador
 			// Vanilla
 			if(x >= 150 && x <= 220 && y >= 200 && y <= 270) {
-				mainWindow.startGameWithColor(1, gameMode, Color.WHITE, Color.PINK);
+				mainWindow.startGameWithColor(1, gameMode, Color.WHITE, Color.PINK, levelConfigs);
 			}
 			// Strawberry
 			if(x >= 265 && x <= 335 && y >= 200 && y <= 270) {
-				mainWindow.startGameWithColor(1, gameMode, Color.PINK, Color.WHITE);
+				mainWindow.startGameWithColor(1, gameMode, Color.PINK, Color.WHITE, levelConfigs);
 			}
 			// Chocolate
 			if(x >= 380 && x <= 450 && y >= 200 && y <= 270) {
-				mainWindow.startGameWithColor(1, gameMode, new Color(139, 69, 19), Color.PINK);
+				mainWindow.startGameWithColor(1, gameMode, new Color(139, 69, 19), Color.PINK, levelConfigs);
 			}
 		}
 	}

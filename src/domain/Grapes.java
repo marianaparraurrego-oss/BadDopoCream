@@ -6,13 +6,14 @@ import java.awt.Color;
  * No se muve
  */
 public class Grapes extends Fruit {
+	public static final int grapesPoints = 50;
 	/**
 	 * Crea un grupo de uvas
 	 * @param gridX
 	 * @param gridY
 	 */
 	public Grapes(int gridX, int gridY) {
-		super(gridX, gridY);
+		super(gridX, gridY, grapesPoints);
 		this.color = Color.MAGENTA;	
 	}
 
@@ -24,10 +25,6 @@ public class Grapes extends Fruit {
 	@Override
 	public void move() {
 		// do not move
-	}
-	@Override
-	public int getPoints() {
-		return 50;
 	}
 
 }

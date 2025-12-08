@@ -35,19 +35,19 @@ public class Pot extends Enemy {
 	            // Moverse horizontalmente
 	            if (dx > 0) {
 	                newX = gridX + 1;
-	                direction = 1; // Derecha
+	                direction = RIGHT; // Derecha
 	            } else if (dx < 0) {
 	                newX = gridX - 1;
-	                direction = 3; // Izquierda
+	                direction = LEFT; // Izquierda
 	            }
 	        } else {
 	            // Moverse verticalmente
 	            if (dy > 0) {
 	                newY = gridY + 1;
-	                direction = 2; // Abajo
+	                direction = DOWN; // Abajo
 	            } else if (dy < 0) {
 	                newY = gridY - 1;
-	                direction = 0; // Arriba
+	                direction = UP; // Arriba
 	            }
 	        }
 		
@@ -85,5 +85,17 @@ public class Pot extends Enemy {
 	@Override
 	public String getType() {
 		return "Pot";
+	}
+
+	@Override
+	public int getAttackRange() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean canAttack() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

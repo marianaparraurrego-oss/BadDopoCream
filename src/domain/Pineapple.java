@@ -11,14 +11,14 @@ public class Pineapple extends Fruit {
     private int lastIceCreamX;
     private int lastIceCreamY;
     private Board board;
-    
+    public static final int pineapplePoints = 200;
     /**
      * Crea una piña
      * @param gridX posicion x
      * @param gridY posicion y
      */
     public Pineapple(int gridX, int gridY) {
-        super(gridX, gridY);
+        super(gridX, gridY, pineapplePoints);
         this.color = new Color(255, 215, 0); // Color dorado
     }
     
@@ -73,10 +73,4 @@ public class Pineapple extends Fruit {
         }
     }
     
-    /**
-     * @return puntos que otorga la piña
-     */
-    public int getPoints() {
-        return 200;
-    }
 }

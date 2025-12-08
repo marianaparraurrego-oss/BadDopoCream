@@ -6,9 +6,15 @@ import java.awt.Color;
  * moverse, disparar y romper hielo
  */
 public class IceCream implements BreakIce{
+	
+	public static final int UP = 0;
+	public static final int RIGHT = 1;
+	public static final int DOWN = 2;
+	public static final int LEFT = 3;
+	
 	private int gridX, gridY;
 	private Color color;
-	private int direction = 2; //0 = arriba, 1 = derecha, 2 = abajo, 3= izquierda
+	private int direction = DOWN;
 	private Board board;
 	private int breakBlocks = 3;
 	/**
@@ -39,10 +45,10 @@ public class IceCream implements BreakIce{
 		int newY = gridY;
 		
 		switch(direction) {
-			case 0: newY--; break; //Arriba
-			case 1: newX++; break; //Derecha
-			case 2: newY++; break; //Abajo
-			case 3: newX--; break; //Izquierda
+			case UP: newY--; break; //Arriba
+			case RIGHT: newX++; break; //Derecha
+			case DOWN: newY++; break; //Abajo
+			case LEFT: newX--; break; //Izquierda
 		}
 		if(board.canMoveTo(newX, newY)) {
 			gridX = newX;
@@ -62,10 +68,10 @@ public class IceCream implements BreakIce{
 	    while(true) {
 	        // Calcular siguiente posición
 	        switch(direction) {
-	            case 0: blockY--; break; // Arriba
-	            case 1: blockX++; break; // Derecha
-	            case 2: blockY++; break; // Abajo
-	            case 3: blockX--; break; // Izquierda
+	            case UP: blockY--; break; // Arriba
+	            case RIGHT: blockX++; break; // Derecha
+	            case DOWN: blockY++; break; // Abajo
+	            case LEFT: blockX--; break; // Izquierda
 	        }
 	        
 	        // Verificar límites del tablero
@@ -97,10 +103,10 @@ public class IceCream implements BreakIce{
 		int breakY = gridY;
 		
 		switch(direction) {
-			case 0: breakY--; break; //Arriba
-			case 1: breakX++; break; //Derecha
-			case 2: breakY++; break; //Abajo
-			case 3: breakX--; break; //Izquierda
+			case UP: breakY--; break; //Arriba
+			case RIGHT: breakX++; break; //Derecha
+			case DOWN: breakY++; break; //Abajo
+			case LEFT: breakX--; break; //Izquierda
 		}
 		for(int i = 0; i < breakBlocks; i++) {
 			if(board.hasBlock(breakX, breakY)) {
@@ -109,10 +115,10 @@ public class IceCream implements BreakIce{
 				break;
 			}
 			switch(direction) {
-				case 0: breakY--; break; //Arriba
-				case 1: breakX++; break; //Derecha
-				case 2: breakY++; break; //Abajo
-				case 3: breakX--; break; //Izquierda
+				case UP: breakY--; break; //Arriba
+				case RIGHT: breakX++; break; //Derecha
+				case DOWN: breakY++; break; //Abajo
+				case LEFT: breakX--; break; //Izquierda
 			}
 		}
 		
@@ -138,6 +144,14 @@ public class IceCream implements BreakIce{
 	public void die() {
 		gridX = -1;
 		gridY = -1;
+	}
+	
+	/**
+	 * Establece la posición del helado
+	 */
+	public void setPosition(int x, int y) {
+		this.gridX = x;
+		this.gridY = y;
 	}
 	
 	public int getGridX() {

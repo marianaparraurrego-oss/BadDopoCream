@@ -8,16 +8,19 @@ public abstract class Fruit {
 	protected int gridX, gridY;
 	protected boolean visible;
 	protected Color color;
+	protected final int points;
 	/**
 	 * Crea una frura en la posicion especifica
 	 * @param gridX coordenada x
 	 * @param gridY coordenada y
 	 */
-	public Fruit(int gridX, int gridY) {
+	public Fruit(int gridX, int gridY, int points) {
 		this.gridY = gridY;
 		this.gridX = gridX;
 		this.visible = true;
+		this.points = points;
 	}
+	
 	/**
 	 * Hace visible la fruta
 	 */
@@ -49,7 +52,9 @@ public abstract class Fruit {
 	 * Obtiene los puntos que otorga la fruta
 	 * @return puntos
 	 */
-	public abstract int getPoints();
+	public final int getPoints() {
+		return points;
+	}
 	
 	
 	public int getGridX() {

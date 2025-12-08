@@ -32,26 +32,31 @@ public class MenuPanel extends JPanel{
 	
 	private void handleMenuClick(int x, int y) {
 		// Botón Player (1 jugador)
-		if(x >= 150 && x <= 450 && y >= 150 && y <= 210) {
+		if(x >= 150 && x <= 450 && y >= 140 && y <= 210) {
 			selectedMode = "Player";
 			mainWindow.startGame(1, "Player");
 		}
 				
 		// Botón PvP (2 jugadores)
-		if(x >= 150 && x <= 450 && y >= 230 && y <= 290) {
+		if(x >= 150 && x <= 450 && y >= 210 && y <= 290) {
 			selectedMode = "PvP";
 			mainWindow.startGame(1, "PvP");
 		}
 				
 		// Botón PvM (Jugador vs Máquina)
-		if(x >= 150 && x <= 450 && y >= 310 && y <= 370) {
+		if(x >= 150 && x <= 450 && y >= 280 && y <= 370) {
 			selectedMode = "PvM";
 			mainWindow.startGame(1, "PvM");
 		}
 		// Botón MvM (Máquina vs Máquina)
-		if(x >= 150 && x <= 450 && y >= 390 && y <= 450) {
+		if(x >= 150 && x <= 450 && y >= 350 && y <= 450) {
 			selectedMode = "MvM";
 			mainWindow.startGame(1, "MvM");
+		}
+		
+		// Botón Load Game
+		if(x >= 150 && x <= 450 && y >= 420 && y <= 500) {
+			mainWindow.showLoadPanel();
 		}
 	}
 	
@@ -72,15 +77,15 @@ public class MenuPanel extends JPanel{
 		g2d.drawString("Select game mode", 150, 120);
 		
 		//Buttons
-		drawButton(g2d, 150, 150, 300, 60, "Player ", selectedMode.equals("Player"));
-		drawButton(g2d, 150, 230, 300, 60, "PvP", selectedMode.equals("PvP"));
-		drawButton(g2d, 150, 310, 300, 60, "PvM", selectedMode.equals("PvM"));
-		drawButton(g2d, 150, 390, 300, 60, "MvM", selectedMode.equals("MvM"));
-		
+		drawButton(g2d, 150, 140, 300, 60, "Player ", selectedMode.equals("Player"));
+		drawButton(g2d, 150, 210, 300, 60, "PvP", selectedMode.equals("PvP"));
+		drawButton(g2d, 150, 280, 300, 60, "PvM", selectedMode.equals("PvM"));
+		drawButton(g2d, 150, 350, 300, 60, "MvM", selectedMode.equals("MvM"));
+		drawButton(g2d, 150, 420, 300, 60, "Load Game", false);
 		//Instructions
-		g2d.setFont(new Font("Arial", Font.ITALIC, 14));
-		g2d.setColor(new Color(100, 100, 100));
-		g2d.drawString("Click a mode to start", 210, 480);
+		//g2d.setFont(new Font("Arial", Font.ITALIC, 14));
+		//g2d.setColor(new Color(100, 100, 100));
+		//g2d.drawString("Click a mode to start", 210, 480);
 	}
 	
 	private void drawButton(Graphics2D g2d, int x, int y, int width, int height, String text, boolean selected) {

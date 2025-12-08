@@ -9,14 +9,14 @@ public class Cactus extends Fruit {
 	private boolean hasSpikes;
 	private long lastSpikeChange;
 	private int spikeInterval = 30000; // 30 segundos
-	
+	public static final int cactusPoints = 250;
 	/**
 	 * Crea un cactus
 	 * @param gridX
 	 * @param gridY
 	 */
 	public Cactus(int gridX, int gridY) {
-		super(gridX, gridY);
+		super(gridX, gridY, cactusPoints);
 		this.color = new Color(34, 139, 34);
 		this.hasSpikes = false;
 		this.lastSpikeChange = System.currentTimeMillis();
@@ -61,12 +61,5 @@ public class Cactus extends Fruit {
 		return !hasSpikes;
 	}
 	
-	/**
-	 * Obtiene el puntaje del cactus
-	 * @return 250 puntos
-	 */
-	public int getPoints() {
-		return 250;
-	}
 	
 }
