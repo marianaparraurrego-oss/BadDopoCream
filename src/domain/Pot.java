@@ -1,13 +1,14 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa una maceta que persigue al jugador
  * No puede romper bloques
  */
-public class Pot extends Enemy {
-	
+public class Pot extends Enemy implements Serializable {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Crea una maceta
 	 * @param gridX

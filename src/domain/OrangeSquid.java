@@ -1,12 +1,14 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa un calamar naranja que persigue al jugador
  * y rompe bloques de hielo uno a la vez cuando los encuentra
  */
-public class OrangeSquid extends Enemy implements BreakIce {
+public class OrangeSquid extends Enemy implements BreakIce, Serializable {
+	private static final long serialVersionUID = 1L;
     private boolean isBreakingBlock;
     private long breakStartTime;
     private static final long BREAK_DURATION = 500; // 0.5 segundos para romper un bloque

@@ -1,9 +1,11 @@
 package domain;
 import java.awt.Color;
+import java.io.Serializable;
 /**
  * Enemigo que patrulla un area
  */
-public class PatrollingEnemy extends Enemy {
+public class PatrollingEnemy extends Enemy implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int minX, maxX, minY, maxY;
 	private int moveCounter = 0;
 	private int moveLimit = 3; //Moverse hasta cambiar de dirrecion

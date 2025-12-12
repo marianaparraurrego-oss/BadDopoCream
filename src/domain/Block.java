@@ -1,8 +1,12 @@
 package domain;
+
+import java.io.Serializable;
+
 /**
  * Representa el bloque de hielo que puede ser puesto o destruido por el jugador
  */
-public class Block {
+public class Block implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int gridX, gridY;
 	private boolean visible;
 	/**

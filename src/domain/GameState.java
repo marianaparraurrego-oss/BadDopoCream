@@ -30,17 +30,20 @@ public class GameState implements Serializable {
     private int iceCream2X;
     private int iceCream2Y;
     
+    private int[][] grid;
+    
     // Estados de las frutas
-    private ArrayList<FruitData> fruits;
+    private ArrayList<Fruit> fruits;
     
     // Estados de los enemigos
-    private ArrayList<EnemyData> enemies;
+    private ArrayList<Enemy> enemies;
     
-    // Estados de los bloques (solo los creados por el jugador)
-    private ArrayList<BlockData> playerBlocks;
+    // Estados de los bloques
+    private ArrayList<Block> blocks;
     
     // Estados de las fogatas
-    private ArrayList<BonfireData> bonfires;
+    private ArrayList<Bonfire> bonfires;
+    private ArrayList<HotTile> hotTiles;
     
     // Información de oleadas
     private int currentWave;
@@ -53,8 +56,9 @@ public class GameState implements Serializable {
     public GameState() {
         fruits = new ArrayList<>();
         enemies = new ArrayList<>();
-        playerBlocks = new ArrayList<>();
+        blocks = new ArrayList<>();
         bonfires = new ArrayList<>();
+        hotTiles = new ArrayList<>();
     }
     
     /**
@@ -84,20 +88,19 @@ public class GameState implements Serializable {
         state.iceCream2X = board.getIceCream2().getGridX();
         state.iceCream2Y = board.getIceCream2().getGridY();
         
-        // Frutas
-        for(Fruit fruit : board.getFruits()) {
-            state.fruits.add(new FruitData(fruit));
+     // Copiar grid completo
+        state.grid = new int[board.getRows()][board.getCols()];
+        for(int i = 0; i < board.getRows(); i++) {
+            for(int j = 0; j < board.getCols(); j++) {
+                state.grid[i][j] = board.getGrid()[i][j];
+            }
         }
         
-        // Enemigos
-        for(Enemy enemy : board.getEnemies()) {
-            state.enemies.add(new EnemyData(enemy));
-        }
-        
-        // Fogatas
-        for(Bonfire bonfire : board.getBonfires()) {
-            state.bonfires.add(new BonfireData(bonfire));
-        }
+        state.blocks = new ArrayList<>(board.getBlocks());
+        state.fruits = new ArrayList<>(board.getFruits());
+        state.enemies = new ArrayList<>(board.getEnemies());
+        state.bonfires = new ArrayList<>(board.getBonfires());
+        state.hotTiles = new ArrayList<>(board.getHotTiles());
         
         state.currentWave = controller.getCurrentWave();
         
@@ -146,9 +149,13 @@ public class GameState implements Serializable {
     public int getIceCream2Y() { return iceCream2Y; }
     public void setIceCream2Y(int y) { this.iceCream2Y = y; }
     
-    public ArrayList<FruitData> getFruits() { return fruits; }
-    public ArrayList<EnemyData> getEnemies() { return enemies; }
-    public ArrayList<BonfireData> getBonfires() { return bonfires; }
+    public int[][] getGrid() { return grid; }
+    public ArrayList<Block> getBlocks() { return blocks; }
+    public ArrayList<Fruit> getFruits() { return fruits; }
+    public ArrayList<Enemy> getEnemies() { return enemies; }
+    public ArrayList<Bonfire> getBonfires() { return bonfires; }
+    public ArrayList<HotTile> getHotTiles() { return hotTiles; }
+    
     
     public int getCurrentWave() { return currentWave; }
     public void setCurrentWave(int wave) { this.currentWave = wave; }
@@ -161,71 +168,6 @@ public class GameState implements Serializable {
     public void setLevelConfigs(LevelConfiguration[] configs) { 
         this.levelConfigs = configs; 
     }
-    /**
-     * Clase interna para guardar datos de frutas
-     */
-    public static class FruitData implements Serializable {
-        private static final long serialVersionUID = 1L;
-        
-        public String type;
-        public int gridX;
-        public int gridY;
-        public boolean visible;
-        
-        public FruitData(Fruit fruit) {
-            this.type = fruit.getType();
-            this.gridX = fruit.getGridX();
-            this.gridY = fruit.getGridY();
-            this.visible = fruit.isVisibleFruit();
-        }
-    }
     
-    /**
-     * Clase interna para guardar datos de enemigos
-     */
-    public static class EnemyData implements Serializable {
-        private static final long serialVersionUID = 1L;
-        
-        public String type;
-        public int gridX;
-        public int gridY;
-        
-        public EnemyData(Enemy enemy) {
-            this.type = enemy.getType();
-            this.gridX = enemy.getGridX();
-            this.gridY = enemy.getGridY();
-        }
-    }
-    
-    /**
-     * Clase interna para guardar datos de bloques
-     */
-    public static class BlockData implements Serializable {
-        private static final long serialVersionUID = 1L;
-        
-        public int gridX;
-        public int gridY;
-        
-        public BlockData(int x, int y) {
-            this.gridX = x;
-            this.gridY = y;
-        }
-    }
-    
-    /**
-     * Clase interna para guardar datos de fogatas
-     */
-    public static class BonfireData implements Serializable {
-        private static final long serialVersionUID = 1L;
-        
-        public int gridX;
-        public int gridY;
-        public boolean isActive;
-        
-        public BonfireData(Bonfire bonfire) {
-            this.gridX = bonfire.getGridX();
-            this.gridY = bonfire.getGridY();
-            this.isActive = bonfire.isActive();
-        }
-    }
+
 }

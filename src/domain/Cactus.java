@@ -1,11 +1,13 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa un cactus que cada 30 segundos le crecen púas
  */
-public class Cactus extends Fruit {
+public class Cactus extends Fruit implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private boolean hasSpikes;
 	private long lastSpikeChange;
 	private int spikeInterval = 30000; // 30 segundos
@@ -60,6 +62,13 @@ public class Cactus extends Fruit {
 	public boolean canBeCollected() {
 		return !hasSpikes;
 	}
+	
+	public boolean hurtsIceCream(IceCream iceCream) {
+        return hasSpikes && 
+               iceCream != null &&
+               iceCream.getGridX() == this.gridX && 
+               iceCream.getGridY() == this.gridY;
+    }
 	
 	
 }

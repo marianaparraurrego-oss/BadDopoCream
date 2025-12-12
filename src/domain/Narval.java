@@ -1,12 +1,14 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa un narval que recorre el espacio
  * y embiste cuando se alinea con el jugador
  */
-public class Narval extends Enemy implements BreakIce{
+public class Narval extends Enemy implements BreakIce, Serializable {
+	private static final long serialVersionUID = 1L;
 	private boolean isCharging;
 	private int chargeSpeed = 2;
 	private int moveCounter = 0;

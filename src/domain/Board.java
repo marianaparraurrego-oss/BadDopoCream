@@ -136,11 +136,11 @@ public class Board {
 		
 		int[][] blockPositions = {
 			// Pasillo superior
-			{4,3},{5,3},{6,3},{7,3},{8,3},{9,3},{10,3},{11,3},{12,3},{13,3},
+			{4,3},{5,3},{6,3},{7,3},{9,3},{10,3},{11,3},{12,3},{13,3},
 			
 			// Columnas verticales
 			{4,4},{4,5},{4,6},
-			{8,4},{8,5},{8,6},{8,7},
+			{8,5},{8,6},{8,7},
 			{13,4},{13,5},{13,6},
 			
 			// Bloques centrales
@@ -149,7 +149,7 @@ public class Board {
 			// Bloques inferiores
 			{3,11},{4,11},{5,11},
 			{12,11},{13,11},{14,11},
-			{8,12},{9,12},{10,12}
+			{9,12},{10,12}
 		};
 		
 		for(int[] pos : blockPositions) {
@@ -253,6 +253,38 @@ public class Board {
 	 */
 	public void addHotTile(HotTile tile) {
 		hotTiles.add(tile);
+	}
+	
+	/**
+	 * Reemplaza el jugador 1 con una IA
+	 */
+	public void replaceIceCream(IceCream newIceCream) {
+	    // Guardar la posición actual
+	    int oldX = iceCream.getGridX();
+	    int oldY = iceCream.getGridY();
+	    
+	    // Reemplazar el jugador
+	    this.iceCream = newIceCream;
+	    
+	    // Mantener la posición
+	    iceCream.setPosition(oldX, oldY);
+	    iceCream.setBoard(this);
+	}
+
+	/**
+	 * Reemplaza el jugador 2 con una IA
+	 */
+	public void replaceIceCream2(IceCream newIceCream) {
+	    // Guardar la posición actual
+	    int oldX = iceCream2.getGridX();
+	    int oldY = iceCream2.getGridY();
+	    
+	    // Reemplazar el jugador
+	    this.iceCream2 = newIceCream;
+	    
+	    // Mantener la posición
+	    iceCream2.setPosition(oldX, oldY);
+	    iceCream2.setBoard(this);
 	}
 	
 	public int getWidth() {

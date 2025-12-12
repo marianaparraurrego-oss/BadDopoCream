@@ -1,13 +1,15 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa una fogata
  * Los enemigos no sufren daño, pero los helados son eliminados
  * Se puede apagar temporalmente con bloques de hielo
  */
-public class Bonfire {
+public class Bonfire implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int gridX, gridY;
     private boolean isActive;
     private long extinguishTime;

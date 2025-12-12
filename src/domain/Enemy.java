@@ -1,12 +1,13 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 /**
  * Clase abstracta para definir enemigos
  * Contiene comportamiento basico para atacar y moverse
  */
-public abstract class Enemy  {
-	
+public abstract class Enemy  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public static final int UP = 0;
     public static final int RIGHT = 1;
     public static final int DOWN = 2;
@@ -16,7 +17,7 @@ public abstract class Enemy  {
 	protected int gridY;
 	private Color color;
 	protected int direction = RIGHT; //0 = arriba, 1 = derecha, 2 = abajo, 3= izquierda
-	protected Board board;
+	protected transient Board board;
 	/**
 	 * Crea un enemigo en la posicion indicada
 	 * @param gridX coordenada x

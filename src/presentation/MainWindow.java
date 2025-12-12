@@ -48,35 +48,51 @@ public class MainWindow extends JFrame {
 		repaint();
 		
 	}
-	
 	/**
 	 * Inicia el juego con configuraciones de niveles
 	 */
 	public void startGameWithConfig(String gameMode, LevelConfiguration[] levelConfigs) {
-		getContentPane().removeAll();
-		
-		PlayerSelectionPanel selectionPanel = new PlayerSelectionPanel(this, gameMode, levelConfigs);
-		add(selectionPanel);
-		pack();
-		revalidate();
-		repaint();
+	    getContentPane().removeAll();
+	    
+	    PlayerSelectionPanel selectionPanel = new PlayerSelectionPanel(this, gameMode, levelConfigs);
+	    add(selectionPanel);
+	    pack();
+	    revalidate();
+	    repaint();
 	}
 	
+	public void startGameWithColor(int level, String gameMode, Color iceCreamColor, Color iceCreamColor2, LevelConfiguration[] levelConfigs,String aiProfile1, String aiProfile2) {
+	getContentPane().removeAll();
+	
+	gameController = new GameController(level, gameMode, iceCreamColor, iceCreamColor2, levelConfigs, aiProfile1, aiProfile2);
+	gamePanel = new GamePanel(gameController, this);
+	gamePanel.setPreferredSize(new Dimension(540, 530));
+	
+	add(gamePanel);
+	pack();
+	revalidate();
+	repaint();
+	
+	gamePanel.requestFocus();
+	}
+
+	//Método sobrecargado para compatibilidad (sin perfiles)
 	public void startGameWithColor(int level, String gameMode, Color iceCreamColor, Color iceCreamColor2, LevelConfiguration[] levelConfigs) {
-		getContentPane().removeAll();
+	// Determinar perfiles según el modo de juego
+		String profile1 = null;
+		String profile2 = null;
 		
-		gameController = new GameController(level, gameMode, iceCreamColor, iceCreamColor2, levelConfigs);
-		gamePanel = new GamePanel(gameController, this);
-		gamePanel.setPreferredSize(new Dimension(540, 530));
+		if (gameMode.equals("PvM")) {
+		profile1 = null; // Jugador 1 humano
+		profile2 = "expert"; // Jugador 2 IA
+		} else if (gameMode.equals("MvM")) {
+		profile1 = "expert"; // Jugador 1 IA
+		profile2 = "expert"; // Jugador 2 IA
+		}
+		// Para Player y PvP, ambos perfiles son null (sin IA)
 		
-		add(gamePanel);
-		pack();
-		revalidate();
-		repaint();
-		
-		gamePanel.requestFocus();
+		startGameWithColor(level, gameMode, iceCreamColor, iceCreamColor2, levelConfigs, profile1, profile2);
 	}
-	
 	/**
 	 * Carga una partida desde un GameState
 	 */

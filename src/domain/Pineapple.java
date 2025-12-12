@@ -1,16 +1,18 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa una fruta tipo piña
  * Se mueve cuando el helado se mueve
  */
-public class Pineapple extends Fruit {
-    private IceCream iceCream;
+public class Pineapple extends Fruit implements Serializable {
+	private static final long serialVersionUID = 1L;
+    private transient IceCream iceCream;
     private int lastIceCreamX;
     private int lastIceCreamY;
-    private Board board;
+    private transient Board board;
     public static final int pineapplePoints = 200;
     /**
      * Crea una piña
@@ -62,11 +64,16 @@ public class Pineapple extends Fruit {
             int newX = gridX + deltaX;
             int newY = gridY + deltaY;
             
-            // Solo se mueve si la nueva posición es válida y no hay bloques
-            if (board.canMoveTo(newX, newY) && !board.hasBlock(newX, newY)) {
-                this.gridX = newX;
-                this.gridY = newY;
-            }
+            if (newX >= 0 && newX < board.getCols() && 
+                    newY >= 0 && newY < board.getRows()) {
+                    
+                    // Solo se mueve si no hay bloques
+            	if (board.canMoveTo(newX, newY) && !board.hasBlock(newX, newY)) {
+                    this.gridX = newX;
+                    this.gridY = newY;
+                }
+                    // Si hay un bloque, la piña se queda donde está
+           }
             
             lastIceCreamX = currentIceCreamX;
             lastIceCreamY = currentIceCreamY;

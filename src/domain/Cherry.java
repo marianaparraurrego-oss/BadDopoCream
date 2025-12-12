@@ -1,15 +1,17 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Representa una cereza que se teletransporta cada 20 segundos
  */
-public class Cherry extends Fruit {
+public class Cherry extends Fruit implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private long lastTeleport;
 	private int teleportInterval = 20000; // 20 segundos
-	private Board board;
+	private transient Board board;
 	private Random random;
 	public static final int cherryPoints = 150;
 	/**

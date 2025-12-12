@@ -1,10 +1,12 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 /**
  * Clase abstracta para representar las frutas
  */
-public abstract class Fruit {
+public abstract class Fruit implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected int gridX, gridY;
 	protected boolean visible;
 	protected Color color;

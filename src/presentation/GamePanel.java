@@ -72,10 +72,12 @@ public class GamePanel extends JPanel {
 				
 				// Siguiente nivel (solo cuando ganó)
 				if(!gameController.isGameRunning() && gameController.didWin()) {
-					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-						if(gameController.getLevel() < 3) {
+					if(e.getKeyCode() == KeyEvent.VK_ENTER){
+						int currentLevel = gameController.getLevel();
+						if(currentLevel < 3) {
 							gameController.nextLevel();
-							repaint(); 
+				    
+				            repaint();
 				            requestFocus();
 						} else {
 							mainWindow.returnToMenu();
@@ -104,14 +106,18 @@ public class GamePanel extends JPanel {
 					
 					// Botón "Siguiente Nivel"
 					if(gameController.getLevel() < 3) {
-						if(e.getX() >= 100 && e.getX() <= 300 && 
+						if(e.getX() >= 80 && e.getX() <= 280 && 
 						   e.getY() >= buttonY && e.getY() <= buttonY + 40) {
 							gameController.nextLevel();
+							
+							revalidate();
+				            repaint();
+				            requestFocus();
 						}
 					}
 					
 					// Botón "Menú"
-					int menuButtonX = gameController.getLevel() < 3 ? 320 : 150;
+					int menuButtonX = gameController.getLevel() < 3 ? 340 : 150;
 					if(e.getX() >= menuButtonX && e.getX() <= menuButtonX + 200 && 
 					   e.getY() >= buttonY && e.getY() <= buttonY + 40) {
 						mainWindow.returnToMenu();
@@ -138,40 +144,51 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void handleInput() {
+		 // SOLO permitir movimiento humano en modos con jugador humano
+	    if (gameController.getGameMode().equals("Player") || 
+	        gameController.getGameMode().equals("PvP") ||
+	        gameController.getGameMode().equals("PvM")) {
+	        
+	        //jugador 1 (solo en modos donde hay jugador humano)
+	        if(gameController.getGameMode().equals("Player") || 
+	           gameController.getGameMode().equals("PvP") ||
+	           gameController.getGameMode().equals("PvM")) {
 		//jugador 1
-		if(keysPressed.contains(KeyEvent.VK_UP) ) {
-			gameController.movePlayer(0);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_RIGHT) ) {
-			gameController.movePlayer(1);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_DOWN)) {
-			gameController.movePlayer(2);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_LEFT) ) {
-			gameController.movePlayer(3);
-		}
-		
-		
-		//Jugador2
-		if(keysPressed.contains(KeyEvent.VK_W)) {
-			gameController.movePlayer2(0);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_D)) {
-			gameController.movePlayer2(1);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_S)) {
-			gameController.movePlayer2(2);
-		}
-		
-		if(keysPressed.contains(KeyEvent.VK_A)) {
-			gameController.movePlayer2(3);
-		}
+				if(keysPressed.contains(KeyEvent.VK_UP) ) {
+					gameController.movePlayer(0);
+				}
+				
+				if(keysPressed.contains(KeyEvent.VK_RIGHT) ) {
+					gameController.movePlayer(1);
+				}
+				
+				if(keysPressed.contains(KeyEvent.VK_DOWN)) {
+					gameController.movePlayer(2);
+				}
+				
+				if(keysPressed.contains(KeyEvent.VK_LEFT) ) {
+					gameController.movePlayer(3);
+				}
+	        }
+			
+			
+			//Jugador2
+			if(keysPressed.contains(KeyEvent.VK_W)) {
+				gameController.movePlayer2(0);
+			}
+			
+			if(keysPressed.contains(KeyEvent.VK_D)) {
+				gameController.movePlayer2(1);
+			}
+			
+			if(keysPressed.contains(KeyEvent.VK_S)) {
+				gameController.movePlayer2(2);
+			}
+			
+			if(keysPressed.contains(KeyEvent.VK_A)) {
+				gameController.movePlayer2(3);
+			}
+	    }
 	}
 	
 	@Override
@@ -306,11 +323,14 @@ public class GamePanel extends JPanel {
 		drawSingleIceCream(g2d, board.getIceCream(), cellSize);
 		
 		// Jugador 2 - Solo en modos PvP y PvM
-		if(gameController.getGameMode().equals("PvP") || 
-		   gameController.getGameMode().equals("PvM")) {
-			drawSingleIceCream(g2d, board.getIceCream2(), cellSize);
-		}
-	}
+		 if(gameController.getGameMode().equals("PvP") || 
+			       gameController.getGameMode().equals("PvM") ||
+			       gameController.getGameMode().equals("MvM")) {
+			        drawSingleIceCream(g2d, board.getIceCream2(), cellSize);
+			    }
+			    
+			    
+			}
 	
 	private void drawSingleIceCream(Graphics2D g2d, IceCream iceCream, int cellSize) {	
 		int x = iceCream.getGridX() * cellSize;
@@ -321,6 +341,15 @@ public class GamePanel extends JPanel {
 		g2d.setColor(Color.BLACK);
 		g2d.setStroke(new BasicStroke(2));
 		g2d.drawOval(x + 5 , y + 5, cellSize - 10, cellSize - 10);
+	
+		 if (iceCream instanceof IceCreamAI) {
+		        IceCreamAI ai = (IceCreamAI) iceCream;
+		        g2d.setColor(Color.BLACK);
+		        g2d.setFont(new Font("Arial", Font.BOLD, 8));
+		        g2d.drawString(ai.getProfile().substring(0, 1).toUpperCase(), 
+		                       x + cellSize/2 - 3, y + cellSize/2 + 3);
+		    }
+	
 	}
 	
 	private void drawEnemies(Graphics2D g2d, Board board, int cellSize) {
@@ -398,8 +427,8 @@ public class GamePanel extends JPanel {
 			
 			// Botones
 			if(gameController.getLevel() < 3) {
-				drawButton(g2d, 100, centerY + 60, 200, 40, "Next Level", new Color(50, 200, 50));
-				drawButton(g2d, 320, centerY + 60, 200, 40, "Menu", new Color(100, 100, 200));
+				drawButton(g2d, 80, centerY + 60, 200, 40, "Next Level", new Color(50, 200, 50));
+				drawButton(g2d, 340, centerY + 60, 200, 40, "Menu", new Color(100, 100, 200));
 			} else {
 				g2d.drawString("¡COMPLETED ALL LEVELS!", centerX - 160, centerY + 40);
 				drawButton(g2d, 150, centerY + 60, 200, 40, "Menu", new Color(100, 100, 200));
