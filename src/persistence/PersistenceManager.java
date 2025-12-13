@@ -6,6 +6,10 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import exceptions.BadDopoCreamExceptions;
+
 /**
  * Gestiona la persistencia de partidas
  * Guarda y carga el estado del juego
@@ -62,7 +66,7 @@ public class PersistenceManager {
      * @return El estado del juego cargado, o null si hay error
      */
     public GameState loadGame(String saveName) {
-        String fileName = SAVE_DIRECTORY + File.separator + saveName + SAVE_EXTENSION;
+String fileName = SAVE_DIRECTORY + File.separator + saveName + SAVE_EXTENSION;
         
         try(ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(fileName))) {
@@ -70,12 +74,19 @@ public class PersistenceManager {
             System.out.println("Game loaded successfully: " + fileName);
             return state;
         } catch(IOException | ClassNotFoundException e) {
+            try {
+                throw new BadDopoCreamExceptions(BadDopoCreamExceptions.LOADGAME_ERROR);
+            } catch(BadDopoCreamExceptions ex) {
+                JOptionPane.showMessageDialog(null, 
+                    ex.getMessage() + "\n" + e.getMessage(),
+                    "Load Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
             System.err.println("Error loading game: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
-    
     /**
      * Obtiene la lista de partidas guardadas
      * @return Lista con los nombres de las partidas guardadas

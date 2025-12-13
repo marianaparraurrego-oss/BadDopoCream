@@ -2,6 +2,9 @@ package presentation;
 
 import domain.*;
 import javax.swing.*;
+
+import exceptions.BadDopoCreamExceptions;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -100,7 +103,18 @@ public class MainWindow extends JFrame {
 		getContentPane().removeAll();
 		
 		gameController = new GameController(1, state.getGameMode(),state.getIceCreamColor(), state.getIceCreamColor2(), state.getLevelConfigs());
-		gameController.loadFromState(state);
+		try {
+	        gameController.loadFromState(state);
+	    } catch (BadDopoCreamExceptions e) {
+	        // Mostrar mensaje de error al usuario
+	        JOptionPane.showMessageDialog(this, 
+	            e.getMessage(),
+	            "Error al cargar partida", 
+	            JOptionPane.ERROR_MESSAGE);
+	        
+	        returnToMenu();
+	        return;
+	    }
 		gamePanel = new GamePanel(gameController, this);
 		gamePanel.setPreferredSize(new Dimension(540, 530));
 		

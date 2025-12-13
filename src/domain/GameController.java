@@ -2,6 +2,8 @@ package domain;
 
 import java.awt.Color;
 
+import exceptions.BadDopoCreamExceptions;
+
 /**
  * Controla la logica principal del juego, incluyendo movimiento, enemigos,
  * colisiones, tiempos y progreso
@@ -233,6 +235,18 @@ public class GameController {
 	 * Configura el nivel 1 con enemigos y frutas en oleadas
 	 */
 	private void setupLevel1() {
+
+		// CREAR IGLÚ CENTRAL (4x4 en el centro)
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
+		// Agregar paredes del iglú (bloques permanentes)
+		for (int i = centerY - 2; i <= centerY + 1; i++) {
+			for (int j = centerX - 2; j <= centerX + 1; j++) {
+				board.getGrid()[i][j] = 1;
+				board.getBlocks().add(new Block(j, i));
+			}
+		}
 		// Enemigos (aparecen desde el inicio)
 		if (levelConfigs != null && levelConfigs.length > 0) {
 			LevelConfiguration config = levelConfigs[0];
@@ -250,9 +264,20 @@ public class GameController {
 	}
 
 	/**
-	 * Configura el nivel 2 Enemigos: 1 Obstáculos: 2 Fogatas, 2 Baldosas calientes
+	 * Configura el nivel 2 Enemigos: 1 Obstáculos:
 	 */
 	private void setupLevel2() {
+
+		// CREAR IGLÚ CENTRAL (4x4)
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
+		for (int i = centerY - 2; i <= centerY + 1; i++) {
+			for (int j = centerX - 2; j <= centerX + 1; j++) {
+				board.getGrid()[i][j] = 1;
+				board.getBlocks().add(new Block(j, i));
+			}
+		}
 		// Enemigos
 		if (levelConfigs != null && levelConfigs.length > 1) {
 			LevelConfiguration config = levelConfigs[1];
@@ -272,9 +297,20 @@ public class GameController {
 	}
 
 	/**
-	 * Configura el nivel 3: Fogatas, 3 Baldosas calientes
+	 * Configura el nivel 3:
 	 */
 	private void setupLevel3() {
+
+		// CREAR IGLÚ CENTRAL (4x4)
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
+		for (int i = centerY - 2; i <= centerY + 1; i++) {
+			for (int j = centerX - 2; j <= centerX + 1; j++) {
+				board.getGrid()[i][j] = 1;
+				board.getBlocks().add(new Block(j, i));
+			}
+		}
 		// Enemigos
 		if (levelConfigs != null && levelConfigs.length > 2) {
 			LevelConfiguration config = levelConfigs[2];
@@ -318,14 +354,31 @@ public class GameController {
 		waveInProgress = true;
 		LevelConfiguration config = levelConfigs[0];
 
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
 		if (currentWave == 0) {
-			// Primera oleada: 8 frutas del tipo 1
-			spawnFruitsByType(config.getFruit1Type(),
-					new int[][] { { 2, 8 }, { 4, 8 }, { 6, 8 }, { 8, 8 }, { 10, 8 }, { 2, 9 }, { 4, 9 }, { 6, 9 } });
+			// Primera oleada: 8 frutas en círculo ARRIBA y LADOS del iglú
+			spawnFruitsByType(config.getFruit1Type(), new int[][] { { centerX - 3, centerY - 3 }, // Arriba izquierda
+					{ centerX - 1, centerY - 3 }, // Arriba centro-izq
+					{ centerX + 0, centerY - 3 }, // Arriba centro
+					{ centerX + 2, centerY - 3 }, // Arriba derecha
+					{ centerX - 4, centerY }, // Izquierda
+					{ centerX + 3, centerY }, // Derecha
+					{ centerX - 4, centerY + 1 }, // Izquierda abajo
+					{ centerX + 3, centerY + 1 } // Derecha abajo
+			});
 		} else if (currentWave == 1) {
-			// Segunda oleada: 8 frutas del tipo 2
-			spawnFruitsByType(config.getFruit2Type(), new int[][] { { 8, 9 }, { 10, 9 }, { 2, 10 }, { 4, 10 },
-					{ 6, 10 }, { 8, 10 }, { 10, 10 }, { 2, 11 } });
+			// Segunda oleada: 8 frutas en círculo ABAJO del iglú
+			spawnFruitsByType(config.getFruit2Type(), new int[][] { { centerX - 3, centerY + 3 }, // Abajo izquierda
+					{ centerX - 1, centerY + 3 }, // Abajo centro-izq
+					{ centerX + 0, centerY + 3 }, // Abajo centro
+					{ centerX + 2, centerY + 3 }, // Abajo derecha
+					{ centerX - 3, centerY + 4 }, // Muy abajo izq
+					{ centerX, centerY + 4 }, // Muy abajo centro
+					{ centerX + 2, centerY + 4 }, // Muy abajo der
+					{ centerX - 1, centerY + 5 } // Última fila
+			});
 		}
 		currentWave++;
 	}
@@ -340,14 +393,21 @@ public class GameController {
 		waveInProgress = true;
 		LevelConfiguration config = levelConfigs[1];
 
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
 		if (currentWave == 0) {
-			// Primera oleada: 6 frutas del tipo 1
+			// Primera oleada: 6 frutas arriba del iglú
 			spawnFruitsByType(config.getFruit1Type(),
-					new int[][] { { 3, 8 }, { 5, 8 }, { 7, 8 }, { 9, 8 }, { 11, 8 }, { 13, 8 } });
+					new int[][] { { centerX - 3, centerY - 3 }, { centerX - 1, centerY - 3 },
+							{ centerX + 0, centerY - 3 }, { centerX + 2, centerY - 3 }, { centerX - 2, centerY - 4 },
+							{ centerX + 1, centerY - 4 } });
 		} else if (currentWave == 1) {
-			// Segunda oleada: 6 frutas del tipo 2
+			// Segunda oleada: 6 frutas abajo del iglú
 			spawnFruitsByType(config.getFruit2Type(),
-					new int[][] { { 3, 10 }, { 5, 10 }, { 7, 10 }, { 9, 10 }, { 11, 10 }, { 13, 10 } });
+					new int[][] { { centerX - 3, centerY + 3 }, { centerX - 1, centerY + 3 },
+							{ centerX + 0, centerY + 3 }, { centerX + 2, centerY + 3 }, { centerX - 2, centerY + 4 },
+							{ centerX + 1, centerY + 4 } });
 		}
 		currentWave++;
 	}
@@ -362,14 +422,21 @@ public class GameController {
 		waveInProgress = true;
 		LevelConfiguration config = levelConfigs[2];
 
+		int centerX = board.getCols() / 2;
+		int centerY = board.getRows() / 2;
+
 		if (currentWave == 0) {
-			// Primera oleada: 7 frutas del tipo 1
+			// Primera oleada: 7 frutas arriba y lados
 			spawnFruitsByType(config.getFruit1Type(),
-					new int[][] { { 3, 7 }, { 8, 8 }, { 11, 8 }, { 11, 10 }, { 3, 10 }, { 7, 10 }, { 5, 13 } });
+					new int[][] { { centerX - 3, centerY - 3 }, { centerX, centerY - 3 }, { centerX + 2, centerY - 3 },
+							{ centerX - 4, centerY }, { centerX + 3, centerY }, { centerX - 4, centerY + 1 },
+							{ centerX + 3, centerY + 1 } });
 		} else if (currentWave == 1) {
-			// Segunda oleada: 7 frutas del tipo 2
+			// Segunda oleada: 7 frutas abajo
 			spawnFruitsByType(config.getFruit2Type(),
-					new int[][] { { 4, 9 }, { 6, 9 }, { 10, 9 }, { 12, 9 }, { 5, 11 }, { 9, 13 }, { 13, 11 } });
+					new int[][] { { centerX - 3, centerY + 3 }, { centerX - 1, centerY + 3 },
+							{ centerX + 0, centerY + 3 }, { centerX + 2, centerY + 3 }, { centerX - 2, centerY + 4 },
+							{ centerX + 1, centerY + 4 }, { centerX, centerY + 5 } });
 		}
 		currentWave++;
 	}
@@ -422,8 +489,19 @@ public class GameController {
 	 * Agrega un enemigo según su tipo
 	 */
 	private void addEnemyByType(String type, int x, int y) {
-		Enemy enemy = null;
 
+		if (board.hasBlock(x, y)) {
+			// Si la posición está bloqueada, buscar una posición libre cercana
+			x = 2;
+			y = 2;
+			// Si (2,2) también está bloqueada, probar otras esquinas
+			if (board.hasBlock(2, 2)) {
+				x = board.getCols() - 3;
+				y = 2;
+			}
+		}
+
+		Enemy enemy = null;
 		switch (type) {
 		case "Troll":
 			enemy = new PatrollingEnemy(x, y, 1, board.getCols() - 2, 1, board.getRows() - 2);
@@ -448,18 +526,19 @@ public class GameController {
 	 * Agrega obstáculos según el tipo seleccionado
 	 */
 	private void addObstaclesByType(String type) {
+		int centerY = board.getRows() / 2;
 		switch (type) {
 		case "Bonfire":
-			board.addBonfire(new Bonfire(12, 8));
-			board.addBonfire(new Bonfire(8, 12));
+			board.addBonfire(new Bonfire(3, 3));
+			board.addBonfire(new Bonfire(board.getCols() - 4, 3));
 			break;
 		case "HotTile":
-			board.addHotTile(new HotTile(14, 10));
-			board.addHotTile(new HotTile(10, 6));
+			board.addHotTile(new HotTile(3, centerY));
+			board.addHotTile(new HotTile(board.getCols() - 4, centerY));
 			break;
 		case "Both":
-			board.addBonfire(new Bonfire(12, 8));
-			board.addHotTile(new HotTile(14, 10));
+			board.addBonfire(new Bonfire(3, 3));
+			board.addHotTile(new HotTile(board.getCols() - 4, centerY));
 			break;
 		}
 	}
@@ -472,7 +551,7 @@ public class GameController {
 			return;
 
 		if (getTimeRemaining() <= 0) {
-			resetToLevel1();
+			resetLevel();
 			return;
 		}
 		// Actualizar fogatas
@@ -501,7 +580,8 @@ public class GameController {
 
 			// Solo mover enemigos cuando el contador alcanza el delay
 			for (Enemy enemy : board.getEnemies()) {
-				enemy.walk(board.getIceCream());
+				IceCream target = getClosestPlayer(enemy);
+				enemy.walk(target);
 			}
 		}
 
@@ -546,9 +626,7 @@ public class GameController {
 			// didWin = true;
 		}
 
-		if (getTimeRemaining() <= 0) {
-			resetLevel();
-		}
+		
 	}
 
 	private void updateAI() {
@@ -577,18 +655,18 @@ public class GameController {
 	private void checkBonfireDamage(Bonfire bonfire) {
 		if (gameMode.equals("PvP") || gameMode.equals("PvM") || gameMode.equals("MvM")) {
 			if (bonfire.killsIceCream(board.getIceCream2())) {
-				resetLevel();
+				resetToLevel1();
 				return;
 			}
 		}
 
 		// Verificar IAs
 		if (aiPlayer1 != null && bonfire.killsIceCream(aiPlayer1)) {
-			resetLevel();
+			resetToLevel1();
 			return;
 		}
 		if (aiPlayer2 != null && bonfire.killsIceCream(aiPlayer2)) {
-			resetLevel();
+			resetToLevel1();
 			return;
 		}
 	}
@@ -626,7 +704,7 @@ public class GameController {
 			// Jugador 1
 			if (board.getIceCream().getGridX() == enemy.getGridX()
 					&& board.getIceCream().getGridY() == enemy.getGridY()) {
-				resetLevel();
+				resetToLevel1();
 				return;
 			}
 
@@ -634,7 +712,7 @@ public class GameController {
 			if (gameMode.equals("PvP") || gameMode.equals("PvM") || gameMode.equals("MvM")) {
 				if (board.getIceCream2().getGridX() == enemy.getGridX()
 						&& board.getIceCream2().getGridY() == enemy.getGridY()) {
-					resetLevel();
+					resetToLevel1();
 					return;
 				}
 			}
@@ -642,13 +720,13 @@ public class GameController {
 			// VERIFICAR IAs
 			if (aiPlayer1 != null && aiPlayer1.getGridX() == enemy.getGridX()
 					&& aiPlayer1.getGridY() == enemy.getGridY()) {
-				resetLevel();
+				resetToLevel1();
 				return;
 			}
 
 			if (aiPlayer2 != null && aiPlayer2.getGridX() == enemy.getGridX()
 					&& aiPlayer2.getGridY() == enemy.getGridY()) {
-				resetLevel();
+				resetToLevel1();
 				return;
 			}
 		}
@@ -661,25 +739,25 @@ public class GameController {
 				if (cactus.hasSpikes()) {
 					// Jugador 1
 					if (cactus.hurtsIceCream(board.getIceCream())) {
-						resetLevel();
+						resetToLevel1();
 						return;
 					}
 
 					// Jugador 2
 					if (gameMode.equals("PvP") || gameMode.equals("PvM") || gameMode.equals("MvM")) {
 						if (cactus.hurtsIceCream(board.getIceCream2())) {
-							resetLevel();
+							resetToLevel1();
 							return;
 						}
 					}
 
 					// VERIFICAR IAs
 					if (aiPlayer1 != null && cactus.hurtsIceCream(aiPlayer1)) {
-						resetLevel();
+						resetToLevel1();
 						return;
 					}
 					if (aiPlayer2 != null && cactus.hurtsIceCream(aiPlayer2)) {
-						resetLevel();
+						resetToLevel1();
 						return;
 					}
 				}
@@ -945,7 +1023,10 @@ public class GameController {
 	/**
 	 * Carga el estado del juego desde un GameState
 	 */
-	public void loadFromState(GameState state) {
+	public void loadFromState(GameState state) throws BadDopoCreamExceptions {
+		if (state == null) {
+			throw new BadDopoCreamExceptions(BadDopoCreamExceptions.LOADGAME_ERROR);
+		}
 		this.level = state.getLevel();
 		this.gameMode = state.getGameMode();
 		this.score = state.getScore();
@@ -1010,6 +1091,30 @@ public class GameController {
 
 		gameRunning = true;
 		gamePaused = false;
+	}
+
+	/**
+	 * Obtiene el jugador más cercano al enemigo (para modos multijugador)
+	 */
+	private IceCream getClosestPlayer(Enemy enemy) {
+		if (gameMode.equals("Player")) {
+			return board.getIceCream();
+		}
+
+		IceCream player1 = board.getIceCream();
+		IceCream player2 = board.getIceCream2();
+
+		if (aiPlayer1 != null) {
+			player1 = aiPlayer1;
+		}
+		if (aiPlayer2 != null) {
+			player2 = aiPlayer2;
+		}
+
+		int dist1 = Math.abs(enemy.getGridX() - player1.getGridX()) + Math.abs(enemy.getGridY() - player1.getGridY());
+		int dist2 = Math.abs(enemy.getGridX() - player2.getGridX()) + Math.abs(enemy.getGridY() - player2.getGridY());
+
+		return (dist1 <= dist2) ? player1 : player2;
 	}
 
 	/**

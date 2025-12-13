@@ -2,186 +2,238 @@ package presentation;
 
 import domain.LevelConfiguration;
 import javax.swing.*;
+
+import exceptions.BadDopoCreamExceptions;
+
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Panel para configurar los niveles del juego Permite al usuario seleccionar
- * frutas y enemigos para cada nivel
- */
 public class LevelConfigPanel extends JPanel {
-	private MainWindow mainWindow;
-	private String gameMode;
-	private LevelConfiguration[] levelConfigs;
+    private MainWindow mainWindow;
+    private String gameMode;
+    private LevelConfiguration[] levelConfigs;
 
-	private JComboBox<String>[] fruit1Combos;
-	private JComboBox<String>[] fruit2Combos;
-	private JComboBox<String>[] enemyCombos;
-	private JComboBox<String>[] obstacleCombos;
+    private JComboBox<String>[] fruit1Combos;
+    private JComboBox<String>[] fruit2Combos;
+    private JComboBox<String>[] enemyCombos;
+    private JComboBox<String>[] obstacleCombos;
 
-	private String[] fruitTypes = { "Grapes", "Banana", "Cherry", "Pineapple", "Cactus" };
-	private String[] enemyTypes = { "Troll", "Pot", "OrangeSquid", "Narval" };
-	private String[] obstacleTypes = { "Bonfire", "HotTile", "Both" };
+    private String[] fruitTypes = { "Grapes", "Banana", "Cherry", "Pineapple", "Cactus" };
+    private String[] enemyTypes = { "Troll", "Pot", "OrangeSquid", "Narval" };
+    private String[] obstacleTypes = { "Bonfire", "HotTile", "Both" };
+    
+    private Image bg;
+    private Image bgPattern;
+    private Image buttonStart;
 
-	@SuppressWarnings("unchecked")
-	public LevelConfigPanel(MainWindow mainWindow, String gameMode) {
-		this.mainWindow = mainWindow;
-		this.gameMode = gameMode;
-		this.levelConfigs = new LevelConfiguration[3];
+    @SuppressWarnings("unchecked")
+    public LevelConfigPanel(MainWindow mainWindow, String gameMode) {
+        this.mainWindow = mainWindow;
+        this.gameMode = gameMode;
+        this.levelConfigs = new LevelConfiguration[3];
 
-		// Inicializar arrays
-		fruit1Combos = new JComboBox[3];
-		fruit2Combos = new JComboBox[3];
-		enemyCombos = new JComboBox[3];
-		obstacleCombos = new JComboBox[3];
+        fruit1Combos = new JComboBox[3];
+        fruit2Combos = new JComboBox[3];
+        enemyCombos = new JComboBox[3];
+        obstacleCombos = new JComboBox[3];
+        
+        loadImages();
+        prepareElements();
+        prepareActions();
+    }
+    
+    private void loadImages() {
+        bg = new ImageIcon(getClass().getResource("/presentation/imagenes/fondo principal.png")).getImage();
+        bgPattern = new ImageIcon(getClass().getResource("/presentation/imagenes/FONDO.png")).getImage();
+        buttonStart = new ImageIcon(getClass().getResource("/presentation/imagenes/boton.png")).getImage();
+    }
 
-		prepareElements();
-		prepareActions();
-	}
+    private void prepareElements() {
+        setLayout(null);
+        setPreferredSize(new Dimension(600, 650));
 
-	private void prepareElements() {
-		setLayout(new BorderLayout());
-		setBackground(new Color(200, 220, 255));
-		setPreferredSize(new Dimension(700, 600));
+        // NIVEL 1
+        int level1Y = 125;
+        addLevelComponents(0, level1Y);
 
-		// Título
-		JPanel titlePanel = new JPanel();
-		titlePanel.setBackground(new Color(200, 220, 255));
-		JLabel titleLabel = new JLabel("CONFIGURE LEVELS");
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-		titleLabel.setForeground(new Color(50, 100, 200));
-		titlePanel.add(titleLabel);
-		add(titlePanel, BorderLayout.NORTH);
+        // NIVEL 2
+        int level2Y = 290;
+        addLevelComponents(1, level2Y);
 
-		// Panel central con configuraciones
-		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-		centerPanel.setBackground(new Color(200, 220, 255));
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        // NIVEL 3
+        int level3Y = 455;
+        addLevelComponents(2, level3Y);
+    }
+    
+    private void addLevelComponents(int levelIndex, int yPosition) {
+        int comboX = 265;
+        int comboWidth = 160;
+        int comboHeight = 28;
+        int spacing = 35;
+        int startY = yPosition - 25; 
 
-		// Crear paneles para cada nivel
-		for (int i = 0; i < 3; i++) {
-			centerPanel.add(createLevelPanel(i + 1));
-			centerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-		}
+        // Fruit 1
+        fruit1Combos[levelIndex] = new JComboBox<>(fruitTypes);
+        fruit1Combos[levelIndex].setFont(new Font("Arial", Font.BOLD, 13));
+        fruit1Combos[levelIndex].setBounds(comboX, startY, comboWidth, comboHeight);
+        add(fruit1Combos[levelIndex]);
 
-		JScrollPane scrollPane = new JScrollPane(centerPanel);
-		scrollPane.setBorder(null);
-		add(scrollPane, BorderLayout.CENTER);
+        // Fruit 2
+        fruit2Combos[levelIndex] = new JComboBox<>(fruitTypes);
+        fruit2Combos[levelIndex].setSelectedIndex(1);
+        fruit2Combos[levelIndex].setFont(new Font("Arial", Font.BOLD, 13));
+        fruit2Combos[levelIndex].setBounds(comboX, startY + spacing, comboWidth, comboHeight);
+        add(fruit2Combos[levelIndex]);
 
-		// Panel de botones
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.setBackground(new Color(200, 220, 255));
+        // Enemy
+        enemyCombos[levelIndex] = new JComboBox<>(enemyTypes);
+        enemyCombos[levelIndex].setFont(new Font("Arial", Font.BOLD, 13));
+        enemyCombos[levelIndex].setBounds(comboX, startY + spacing * 2, comboWidth, comboHeight);
+        add(enemyCombos[levelIndex]);
 
-		JButton startButton = new JButton("Start Game");
-		startButton.setFont(new Font("Arial", Font.BOLD, 18));
-		startButton.setPreferredSize(new Dimension(200, 50));
-		startButton.setBackground(new Color(50, 200, 50));
-		startButton.addActionListener(e -> startGame());
+        // Obstacles
+        obstacleCombos[levelIndex] = new JComboBox<>(obstacleTypes);
+        obstacleCombos[levelIndex].setFont(new Font("Arial", Font.BOLD, 13));
+        obstacleCombos[levelIndex].setBounds(comboX, startY + spacing * 3, comboWidth, comboHeight);
+        add(obstacleCombos[levelIndex]);
+    }
 
-		JButton backButton = new JButton("Back");
-		backButton.setFont(new Font("Arial", Font.BOLD, 18));
-		backButton.setPreferredSize(new Dimension(150, 50));
-		backButton.addActionListener(e -> mainWindow.returnToMenu());
+    private void prepareActions() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleClick(e.getX(), e.getY());
+            }
+        });
+    }
+    
+    private void handleClick(int x, int y) {
+        // Botón START
+        if (x >= 300 && x <= 500 && y >= 595 && y <= 645) {
+            startGame();
+        }
+        
+        // Botón BACK
+        if (x >= 100 && x <= 300 && y >= 595 && y <= 645) {
+            mainWindow.returnToMenu();
+        }
+    }
 
-		buttonPanel.add(startButton);
-		buttonPanel.add(backButton);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
+        // Fondo principal
+        if (bg != null) {
+            g2d.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
+        }
+        
+        // Título principal
+        g2d.setFont(new Font("Arial", Font.BOLD, 36));
+        drawText(g2d, "CONFIGURE LEVELS", 116, 50, Color.BLACK, new Color(135, 206, 250), 3);
+        
+        // NIVEL 1
+        drawLevelPanel(g2d, 1, 90);
+        
+        // NIVEL 2
+        drawLevelPanel(g2d, 2, 255);
+        
+        // NIVEL 3
+        drawLevelPanel(g2d, 3, 420);
+        
+        // Botones
+        drawButton(g2d, 100, 595, 200, 50, "BACK");
+        drawButton(g2d, 300, 595, 200, 50, "START GAME");
+    }
+    
+    private void drawLevelPanel(Graphics2D g2d, int levelNum, int yPos) {
+        int panelX = 50;
+        int panelWidth = 500;
+        int panelHeight = 150;
+        
+        // Fondo del panel
+        if (bgPattern != null) {
+            g2d.drawImage(bgPattern, panelX, yPos, panelWidth, panelHeight, null);
+        }
+        
+        // Borde negro delgado
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRect(panelX, yPos, panelWidth, panelHeight);
+        
+        // Título del nivel
+        g2d.setFont(new Font("Arial", Font.BOLD, 24));
+        drawText(g2d, "LEVEL " + levelNum, panelX + 12, yPos + 30, Color.BLACK, new Color(135, 206, 250), 2);
+        
+        // Labels de las opciones
+        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        int labelX = panelX + 127;
+        int startY = yPos + 31;
+        int spacing = 35;
+        
+        drawText(g2d, "Fruit 1:", labelX, startY, Color.BLACK, Color.WHITE, 1);
+        drawText(g2d, "Fruit 2:", labelX, startY + spacing, Color.BLACK, Color.WHITE, 1);
+        drawText(g2d, "Enemy:", labelX, startY + spacing * 2, Color.BLACK, Color.WHITE, 1);
+        drawText(g2d, "Obstacles:", labelX, startY + spacing * 3, Color.BLACK, Color.WHITE, 1);
+    }
+    
+    private void drawButton(Graphics2D g2d, int x, int y, int width, int height, String text) {
+        if (buttonStart != null) {
+            g2d.drawImage(buttonStart, x, y, width, height, null);
+        } else {
+            g2d.setColor(new Color(34, 139, 34));
+            g2d.fillRoundRect(x, y, width, height, 20, 20);
+        }
+        
+        g2d.setFont(new Font("Arial", Font.BOLD, 22));
+        FontMetrics fm = g2d.getFontMetrics();
+        int textX = x + (width - fm.stringWidth(text)) / 2;
+        int textY = y + ((height - fm.getHeight()) / 2) + fm.getAscent();
+        
+        drawText(g2d, text, textX, textY, Color.BLACK, Color.YELLOW, 2);
+    }
+    
+    private void drawText(Graphics2D g2d, String text, int x, int y, Color outline, Color fill, int thickness) {
+        g2d.setColor(outline);
+        for (int dx = -thickness; dx <= thickness; dx++) {
+            for (int dy = -thickness; dy <= thickness; dy++) {
+                if (dx != 0 || dy != 0) {
+                    g2d.drawString(text, x + dx, y + dy);
+                }
+            }
+        }
+        g2d.setColor(fill);
+        g2d.drawString(text, x, y);
+    }
 
-		add(buttonPanel, BorderLayout.SOUTH);
-	}
-
-	/**
-	 * Crea el panel de configuración para un nivel
-	 */
-	private JPanel createLevelPanel(int levelNum) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.setBackground(Color.WHITE);
-		panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(100, 150, 255), 3),
-				BorderFactory.createEmptyBorder(15, 15, 15, 15)));
-
-		// Título del nivel
-		JLabel levelLabel = new JLabel("LEVEL " + levelNum);
-		levelLabel.setFont(new Font("Arial", Font.BOLD, 24));
-		levelLabel.setForeground(new Color(50, 100, 200));
-
-		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		titlePanel.setBackground(Color.WHITE);
-		titlePanel.add(levelLabel);
-		panel.add(titlePanel, BorderLayout.NORTH);
-
-		// Grid con las opciones
-		JPanel gridPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-		gridPanel.setBackground(Color.WHITE);
-
-		int idx = levelNum - 1;
-
-		// Fruta 1
-		JLabel fruit1Label = new JLabel("Fruit 1:");
-		fruit1Label.setFont(new Font("Arial", Font.BOLD, 14));
-		fruit1Combos[idx] = new JComboBox<>(fruitTypes);
-		fruit1Combos[idx].setFont(new Font("Arial", Font.PLAIN, 14));
-
-		// Fruta 2
-		JLabel fruit2Label = new JLabel("Fruit 2:");
-		fruit2Label.setFont(new Font("Arial", Font.BOLD, 14));
-		fruit2Combos[idx] = new JComboBox<>(fruitTypes);
-		fruit2Combos[idx].setSelectedIndex(1); // Diferente por defecto
-		fruit2Combos[idx].setFont(new Font("Arial", Font.PLAIN, 14));
-
-		// Enemigo
-		JLabel enemyLabel = new JLabel("Enemy:");
-		enemyLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		enemyCombos[idx] = new JComboBox<>(enemyTypes);
-		enemyCombos[idx].setFont(new Font("Arial", Font.PLAIN, 14));
-
-		// Obstáculos
-		JLabel obstacleLabel = new JLabel("Obstacles:");
-		obstacleLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		obstacleCombos[idx] = new JComboBox<>(obstacleTypes);
-		obstacleCombos[idx].setFont(new Font("Arial", Font.PLAIN, 14));
-
-		gridPanel.add(fruit1Label);
-		gridPanel.add(fruit1Combos[idx]);
-		gridPanel.add(fruit2Label);
-		gridPanel.add(fruit2Combos[idx]);
-		gridPanel.add(enemyLabel);
-		gridPanel.add(enemyCombos[idx]);
-		gridPanel.add(obstacleLabel);
-		gridPanel.add(obstacleCombos[idx]);
-
-		panel.add(gridPanel, BorderLayout.CENTER);
-
-		return panel;
-	}
-
-	private void prepareActions() {
-		// Nada específico por ahora
-	}
-
-	/**
-	 * Valida y inicia el juego con las configuraciones
-	 */
-	private void startGame() {
-		// Crear configuraciones para cada nivel
-		for (int i = 0; i < 3; i++) {
-			String fruit1 = (String) fruit1Combos[i].getSelectedItem();
-			String fruit2 = (String) fruit2Combos[i].getSelectedItem();
-			String enemy = (String) enemyCombos[i].getSelectedItem();
-			String obstacle = (String) obstacleCombos[i].getSelectedItem();
-
-			// Validar que las frutas sean diferentes
-			if (fruit1.equals(fruit2)) {
-				JOptionPane.showMessageDialog(this, "Level " + (i + 1) + ": Please select two different fruit types",
-						"Configuration Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			levelConfigs[i] = new LevelConfiguration(fruit1, fruit2, enemy, obstacle);
-		}
-
-		// Ir a selección de personajes con las configuraciones
-		// LLAMAR AL MÉTODO CORRECTO
-		mainWindow.startGameWithConfig(gameMode, levelConfigs);
-	}
+    private void startGame(){
+    	try {
+	        for (int i = 0; i < 3; i++) {
+	            String fruit1 = (String) fruit1Combos[i].getSelectedItem();
+	            String fruit2 = (String) fruit2Combos[i].getSelectedItem();
+	            String enemy = (String) enemyCombos[i].getSelectedItem();
+	            String obstacle = (String) obstacleCombos[i].getSelectedItem();
+	
+	            if (fruit1.equals(fruit2)) {
+	                throw new BadDopoCreamExceptions(
+	                    BadDopoCreamExceptions.DUPLICATE_FRUIT + 
+	                    " en Level " + (i + 1)
+	                );
+	            }
+	
+	            levelConfigs[i] = new LevelConfiguration(fruit1, fruit2, enemy, obstacle);
+	        }
+	
+	        mainWindow.startGameWithConfig(gameMode, levelConfigs);
+    	} catch (BadDopoCreamExceptions e) {
+            JOptionPane.showMessageDialog(this, 
+                e.getMessage(),
+                "Configuration Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    	}
 }

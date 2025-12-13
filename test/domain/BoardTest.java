@@ -23,6 +23,12 @@ public class BoardTest {
 		assertEquals(540, board.getWidth());
 		assertEquals(480, board.getHeight());
 	}
+	@Test
+	void testWallsAreBlocks() {
+	assertTrue(board.hasBlock(0, 0));
+	assertTrue(board.hasBlock(17, 15));
+	assertFalse(board.canMoveTo(0, 0));
+	}
 	
 	@Test
 	public void testLvel1Creation() {
@@ -35,6 +41,7 @@ public class BoardTest {
 		assertEquals(16, board.getFruits().size());
 
 	}
+	
 	
 	@Test
 	public void testCanMoveTo() {
@@ -53,15 +60,7 @@ public class BoardTest {
 		assertFalse(board.hasBlock(9, 9));
 	}
 	
-	@Test
-	public void testSetBlock() {
-		int x = 10;
-		int y = 10;
-		
-		assertFalse(board.hasBlock(x, y));
-		board.setBlock(x, y);
-		assertTrue(board.hasBlock(x, y));
-	}
+
 	
 	@Test
 	public void testBoundaryChecks() {
@@ -70,6 +69,15 @@ public class BoardTest {
 		assertFalse(board.canMoveTo(20, 5));
 		assertFalse(board.canMoveTo(5, 20));
 
+	}
+	@Test
+	void testSetAndRemoveBlock() {
+	board.setBlock(6, 6);
+	assertTrue(board.hasBlock(6, 6));
+
+
+	board.removeBlock(6, 6);
+	assertFalse(board.hasBlock(6, 6));
 	}
 
 }

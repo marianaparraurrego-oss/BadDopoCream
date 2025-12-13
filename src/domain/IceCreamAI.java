@@ -188,10 +188,7 @@ public abstract class IceCreamAI extends IceCream {
             moveRandomly();
             return;
         }
-    	 if (board == null) {
-             moveRandomly();
-             return;
-         }
+    	 
          
          attemptCounter++;
          

@@ -8,15 +8,24 @@ import java.awt.event.*;
 public class MenuPanel extends JPanel{
 	private MainWindow mainWindow;
 	private String selectedMode = "PvP";
+	private Image bg;
+    private Image buttonSelected;
+	private Font pixelFont = new Font("Arial", Font.BOLD, 26);
 	
 	public MenuPanel(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
+		loadImagen();
 		prepareElements();
 		prepareActions();
 	}
 	
+	private void loadImagen(){
+        bg = new ImageIcon(getClass().getResource("/presentation/imagenes/fondo principal.png")).getImage();
+        buttonSelected = new ImageIcon(getClass().getResource("/presentation/imagenes/boton.png")).getImage();
+
+    }
+	
 	private void prepareElements() {
-		setBackground(new Color(200, 220, 255));
 		setPreferredSize(new Dimension(600,500));
 	}
 	
@@ -65,16 +74,37 @@ public class MenuPanel extends JPanel{
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+		g2d.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
 		
 		//Title
 		g2d.setFont(new Font("Arial", Font.BOLD, 50));
-		g2d.setColor(new Color(50, 100 ,200));
-		g2d.drawString("BADDOPOCREAM", 80, 80);
+				
+		g2d.setColor(Color.BLACK);
+			for (int dx = -3; dx <= 3; dx++) {
+				for (int dy = -3; dy <= 3; dy++) {
+					if (dx != 0 || dy != 0) {
+						g2d.drawString("BAD DOPO CREAM", 85 + dx, 80 + dy);
+					}
+				}
+			}
+			
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("BAD DOPO CREAM", 85, 80);
 		
 		//Subtitle
-		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+		g2d.setFont(new Font("Arial", Font.BOLD, 22));
 		g2d.setColor(Color.BLACK);
-		g2d.drawString("Select game mode", 150, 120);
+		for (int dx = -2; dx <= 2; dx++) {
+			for (int dy = -2; dy <= 2; dy++) {
+				if (dx != 0 || dy != 0) {
+					g2d.drawString("Select game mode", 200 + dx, 120 + dy);
+				}
+			}
+		}
+		g2d.setColor(Color.BLUE);
+		g2d.drawString("Select game mode", 200, 120);
 		
 		//Buttons
 		drawButton(g2d, 150, 140, 300, 60, "Player ", selectedMode.equals("Player"));
@@ -89,22 +119,36 @@ public class MenuPanel extends JPanel{
 	}
 	
 	private void drawButton(Graphics2D g2d, int x, int y, int width, int height, String text, boolean selected) {
-		if(selected) {
-			g2d.setColor(new Color(100, 150, 255));
-		}else {
-			g2d.setColor(new Color(150, 180, 255));
+		//Fondo del boton
+		if (buttonSelected != null) {
+            g2d.drawImage(buttonSelected, x, y, width, height, null);
+        } else {
+            g2d.setColor(new Color(150, 100, 50));
+            g2d.fillRoundRect(x, y, width, height, 15, 15);
+        }
+		
+		//Borde si esta seleccionado
+		if (selected) {
+            g2d.setStroke(new BasicStroke(4));
+            g2d.setColor(new Color(255, 255, 0));
+            g2d.drawRoundRect(x + 2, y + 2, width - 4, height - 4, 15, 15);
+        }
+		
+		g2d.setFont(new Font("Arial", Font.BOLD, 24));
+		FontMetrics fm = g2d.getFontMetrics();
+		int textX = x + (width - fm.stringWidth(text)) / 2;
+		int textY = y + ((height - fm.getHeight()) / 2) + fm.getAscent();
+		
+		g2d.setColor(Color.BLACK);
+		for (int dx = -2; dx <= 2; dx++) {
+			for (int dy = -2; dy <= 2; dy++) {
+				if (dx != 0 || dy != 0) {
+					g2d.drawString(text, textX + dx, textY + dy);
+				}
+			}
 		}
 		
-		g2d.fillRoundRect(x, y, width, height, 15, 15);
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(2));
-		g2d.drawRoundRect(x, y, width, height, 15, 15);
-		
-		g2d.setFont(new Font("Arial", Font.BOLD,16));
-		g2d.setColor(Color.WHITE);
-		FontMetrics fm = g2d.getFontMetrics();
-		int textX = x + (width- fm.stringWidth(text)) / 2;
-		int textY = y + ((height- fm.getHeight()) / 2)+ fm.getAscent();
+		g2d.setColor(Color.YELLOW);
 		g2d.drawString(text, textX, textY);
 	}
 	

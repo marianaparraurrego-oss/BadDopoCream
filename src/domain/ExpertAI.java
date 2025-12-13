@@ -13,7 +13,7 @@ public class ExpertAI extends IceCreamAI {
     public void makeDecision() {
         if (board == null) return;
         
-        // 1. Evaluar amenazas inmediatas
+        // Evaluar amenazas inmediatas
         int threatLevel = evaluateThreatLevel();
         
         if (threatLevel > 7) { // Peligro alto
@@ -79,7 +79,7 @@ public class ExpertAI extends IceCreamAI {
                 else direction = DOWN;
             }
             
-            shootIce(); // Crear barrera de hielo
+            shootIce(); 
         }
     }
     
