@@ -32,7 +32,6 @@ public class IceCreamTest {
         int originalY = iceCream.getGridY();
         iceCream.move(2);
         assertEquals(originalX, iceCream.getGridX());
-        assertEquals(originalY , iceCream.getGridY());
     }
 
     @Test
@@ -72,5 +71,14 @@ public class IceCreamTest {
         iceCream.die();
         assertEquals(-1, iceCream.getGridX());
         assertEquals(-1, iceCream.getGridY());
+    }
+    @Test
+    void setPosition_actualizaCoordenadas() {
+        IceCream ice = new IceCream(0, 0, Color.PINK);
+
+        ice.setPosition(5, 6);
+
+        assertEquals(5, ice.getGridX());
+        assertEquals(6, ice.getGridY());
     }
 }

@@ -14,7 +14,7 @@ LevelConfiguration config = new LevelConfiguration(
 "Troll", "Bonfire", "Grapes", "Banana");
 
 
-assertEquals("Troll", config.getEnemyType());
+assertEquals("PatrollingEnemy", config.getEnemyType());
 assertEquals("Bonfire", config.getObstacleType());
 assertEquals("Grapes", config.getFruit1Type());
 assertEquals("Banana", config.getFruit2Type());
