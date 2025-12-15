@@ -17,6 +17,7 @@ public class GameController {
 	private int fruitsCollected;
 	private long startTime;
 	private int timeLimit = 180;
+	
 	private boolean gameRunning;
 	private boolean gamePaused;
 	private int fruitsToCollect;

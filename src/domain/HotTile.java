@@ -1,12 +1,13 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Representa una baldosa caliente
  * Los bloques de hielo creados sobre ella se derriten inmediatamente
  */
-public class HotTile {
+public class HotTile implements Serializable{
     private int gridX, gridY;
     private Color color = new Color(255, 140, 0); // Naranja
     

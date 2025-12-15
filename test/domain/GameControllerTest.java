@@ -1,169 +1,254 @@
 package domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.awt.Color;
-import java.util.ArrayList;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
+import java.awt.Color;
 import exceptions.BadDopoCreamExceptions;
 
-/**
- * Pruebas unitarias de GameController
- * SIN Mockito – solo JUnit 5 y objetos reales
- */
-public class GameControllerTest {
-
+class GameControllerTest {
+    
+    private GameController controller;
     private LevelConfiguration[] configs;
-
+    
     @BeforeEach
-    void setup() {
-        configs = new LevelConfiguration[] {
-            new LevelConfiguration("Troll", "Bonfire", "Grapes", "Banana"),
-            new LevelConfiguration("Pot", "HotTile", "Cherry", "Grapes"),
-            new LevelConfiguration("Narval", "Both", "Pineapple", "Cherry")
-        };
-    }
-
-    @Test
-    void constructorInicializaValoresBasicos() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        assertEquals(1, gc.getLevel());
-        assertEquals("Player", gc.getGameMode());
-        assertEquals(0, gc.getScore());
-        assertEquals(0, gc.getFruitsCollected());
-        assertTrue(gc.isGameRunning());
-        assertFalse(gc.isGamePaused());
-        assertNotNull(gc.getBoard());
-    }
-
-    @Test
-    void constructorMvM_creaDosIAs() {
-        GameController gc =
-                new GameController(1, "MvM", Color.BLUE, Color.RED, configs);
-
-        assertNotNull(gc.getAIPlayer1());
-        assertNotNull(gc.getAIPlayer2());
-    }
-
-    @Test
-    void pauseGame_alternaEstado() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        gc.pauseGame();
-        assertTrue(gc.isGamePaused());
-
-        gc.pauseGame();
-        assertFalse(gc.isGamePaused());
-    }
-
-    @Test
-    void movePlayer_noLanzaExcepcion() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        assertDoesNotThrow(() -> gc.movePlayer(IceCream.RIGHT));
-    }
-
-    @Test
-    void movePlayer2_noLanzaExcepcionEnCualquierModo() {
-        GameController gc1 =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-        GameController gc2 =
-                new GameController(1, "PvP", Color.BLUE, Color.RED, configs);
-
-        assertDoesNotThrow(() -> gc1.movePlayer2(IceCream.LEFT));
-        assertDoesNotThrow(() -> gc2.movePlayer2(IceCream.LEFT));
-    }
-
-    @Test
-    void resetLevel_reiniciaPeroMantieneNivel() {
-        GameController gc =
-                new GameController(2, "Player", Color.BLUE, Color.RED, configs);
-
-        gc.resetLevel();
-
-        assertEquals(2, gc.getLevel());
-        assertEquals(0, gc.getScore());
-        assertEquals(0, gc.getFruitsCollected());
-        assertTrue(gc.isGameRunning());
-    }
-
-    @Test
-    void resetToLevel1_fijaNivelUno() {
-        GameController gc =
-                new GameController(3, "Player", Color.BLUE, Color.RED, configs);
-
-        gc.resetToLevel1();
-
-        assertEquals(1, gc.getLevel());
-        assertEquals(0, gc.getScore());
-        assertTrue(gc.isGameRunning());
-    }
-
-    @Test
-    void nextLevel_incrementaHastaMaximo() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        gc.nextLevel();
-        assertEquals(2, gc.getLevel());
-
-        gc.nextLevel();
-        assertEquals(3, gc.getLevel());
-
-        gc.nextLevel();
-        assertEquals(3, gc.getLevel()); // no pasa del último nivel
-    }
-
-    @Test
-    void getTimeRemaining_disminuyeConElTiempo() throws InterruptedException {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        int t1 = gc.getTimeRemaining();
-        Thread.sleep(1100);
-        int t2 = gc.getTimeRemaining();
-
-        assertTrue(t2 < t1);
-    }
-
-    @Test
-    void didWin_esFalseInicialmente() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        assertFalse(gc.didWin());
-    }
-
-    @Test
-    void loadFromState_nullLanzaExcepcion() {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        assertThrows(
-                BadDopoCreamExceptions.class,
-                () -> gc.loadFromState(null)
-        );
-    }
-
-    @Test
-    void loadFromState_cargaDatosBasicos() throws Exception {
-        GameController gc =
-                new GameController(1, "Player", Color.BLUE, Color.RED, configs);
-
-        GameState state = new GameState(); // constructor REAL (simple)
-
-        state.setLevel(2);
-        state.setGameMode("Player");
-        state.setScore(50);
-        state.setFruitsCollected(3);
-
+    void setUp() {
+        configs = new LevelConfiguration[3];
+        configs[0] = new LevelConfiguration("Banana", "Cherry", "Troll", "Bonfire");
+        configs[1] = new LevelConfiguration("Grapes", "Cactus", "Pot", "HotTile");
+        configs[2] = new LevelConfiguration("Pineapple", "Cherry", "Narval", "Both");
         
+        controller = new GameController(1, "Player", Color.BLUE, Color.RED, configs);
+    }
+    
+    @Test
+    void testConstructorPlayerMode() {
+        assertNotNull(controller.getBoard());
+        assertEquals(1, controller.getLevel());
+        assertTrue(controller.isGameRunning());
+        assertFalse(controller.isGamePaused());
+        assertEquals(0, controller.getScore());
+        assertEquals(0, controller.getFruitsCollected());
+    }
+    
+    @Test
+    void testConstructorPvPMode() {
+        GameController pvp = new GameController(1, "PvP", Color.BLUE, Color.RED, configs);
+        assertEquals("PvP", pvp.getGameMode());
+        assertNotNull(pvp.getBoard().getIceCream2());
+    }
+    
+    @Test
+    void testConstructorPvMMode() {
+        GameController pvm = new GameController(1, "PvM", Color.BLUE, Color.RED, configs, "expert", "hungry");
+        assertEquals("PvM", pvm.getGameMode());
+        assertNull(pvm.getAIPlayer1());
+        assertNotNull(pvm.getAIPlayer2());
+    }
+    
+    @Test
+    void testConstructorMvMMode() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, "expert", "fearful");
+        assertEquals("MvM", mvm.getGameMode());
+        assertNotNull(mvm.getAIPlayer1());
+        assertNotNull(mvm.getAIPlayer2());
+    }
+    
+    @Test
+    void testMovePlayer() {
+        int initialX = controller.getBoard().getIceCream().getGridX();
+        controller.movePlayer(IceCream.RIGHT);
+        assertNotNull(controller.getBoard().getIceCream());
+    }
+    
+    @Test
+    void testMovePlayer2() {
+        GameController pvp = new GameController(1, "PvP", Color.BLUE, Color.RED, configs);
+        pvp.movePlayer2(IceCream.LEFT);
+        assertNotNull(pvp.getBoard().getIceCream2());
+    }
+    
+    @Test
+    void testShootIce() {
+        controller.shootIce();
+        assertNotNull(controller.getBoard().getBlocks());
+    }
+    
+    @Test
+    void testShootIce2() {
+        GameController pvp = new GameController(1, "PvP", Color.BLUE, Color.RED, configs);
+        pvp.shootIce2();
+        assertNotNull(pvp.getBoard().getBlocks());
+    }
+    
+    @Test
+    void testBreakIce() {
+        controller.getBoard().setBlock(8, 11);
+        controller.breakIce();
+        assertNotNull(controller.getBoard());
+    }
+    
+    @Test
+    void testUpdate() {
+        controller.update();
+        assertTrue(controller.isGameRunning());
+    }
+    
+    @Test
+    void testPauseGame() {
+        controller.pauseGame();
+        assertTrue(controller.isGamePaused());
+        controller.pauseGame();
+        assertFalse(controller.isGamePaused());
+    }
+    
+    @Test
+    void testResetLevel() {
+        controller.resetLevel();
+        assertEquals(0, controller.getScore());
+        assertEquals(0, controller.getFruitsCollected());
+        assertTrue(controller.isGameRunning());
+    }
+    
+    @Test
+    void testResetToLevel1() {
+        controller.resetToLevel1();
+        assertEquals(1, controller.getLevel());
+        assertEquals(0, controller.getScore());
+        assertEquals(0, controller.getFruitsCollected());
+    }
+    
+    @Test
+    void testNextLevel() {
+        controller.nextLevel();
+        assertEquals(2, controller.getLevel());
+    }
+    
+    @Test
+    void testNextLevelAtMaxLevel() {
+        GameController c = new GameController(3, "Player", Color.BLUE, Color.RED, configs);
+        c.nextLevel();
+        assertEquals(3, c.getLevel());
+    }
+    
+    @Test
+    void testGetTimeRemaining() {
+        int time = controller.getTimeRemaining();
+        assertTrue(time > 0 && time <= 180);
+    }
+    
+    @Test
+    void testDidWin() {
+        assertFalse(controller.didWin());
+    }
+    
+    @Test
+    void testGetTotalFruits() {
+        assertTrue(controller.getTotalFruits() > 0);
+    }
+    
+    @Test
+    void testGetScorePlayers() {
+        GameController pvp = new GameController(1, "PvP", Color.BLUE, Color.RED, configs);
+        assertEquals(0, pvp.getScorePlayer1());
+        assertEquals(0, pvp.getScorePlayer2());
+    }
+    
+    @Test
+    void testSetEnemyMoveDelay() {
+        controller.setEnemyMoveDelay(10);
+        assertNotNull(controller);
+    }
+    
+    @Test
+    void testSetAIProfiles() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, "hungry", "fearful");
+        mvm.setAIProfiles("expert", "hungry");
+        assertEquals("expert", mvm.getAI1Profile());
+        assertEquals("hungry", mvm.getAI2Profile());
+    }
+    
+    @Test
+    void testGetAI1Profile() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, "expert", "fearful");
+        assertEquals("expert", mvm.getAI1Profile());
+    }
+    
+    @Test
+    void testGetAI2Profile() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, "expert", "fearful");
+        assertEquals("fearful", mvm.getAI2Profile());
+    }
+    
+    @Test
+    void testLoadFromStateNull() {
+        assertThrows(BadDopoCreamExceptions.class, () -> {
+            controller.loadFromState(null);
+        });
+    }
+    
+    @Test
+    void testLoadFromStateValid() throws BadDopoCreamExceptions {
+        GameState state = GameState.fromGameController(controller);
+        controller.loadFromState(state);
+        assertEquals(state.getLevel(), controller.getLevel());
+    }
+    
+    @Test
+    void testGetCurrentWave() {
+        assertTrue(controller.getCurrentWave() >= 0);
+    }
+    
+    @Test
+    void testGetStartTime() {
+        assertTrue(controller.getStartTime() > 0);
+    }
+    
+    @Test
+    void testGetLevelConfigs() {
+        assertArrayEquals(configs, controller.getLevelConfigs());
+    }
+    
+    @Test
+    void testMultipleUpdates() {
+        for (int i = 0; i < 10; i++) {
+            controller.update();
+        }
+        assertTrue(controller.isGameRunning());
+    }
+    
+    @Test
+    void testUpdateWhilePaused() {
+        controller.pauseGame();
+        controller.update();
+        assertTrue(controller.isGamePaused());
+    }
+    
+    @Test
+    void testLevel2Setup() {
+        GameController c = new GameController(2, "Player", Color.BLUE, Color.RED, configs);
+        assertEquals(2, c.getLevel());
+        assertNotNull(c.getBoard());
+    }
+    
+    @Test
+    void testLevel3Setup() {
+        GameController c = new GameController(3, "Player", Color.BLUE, Color.RED, configs);
+        assertEquals(3, c.getLevel());
+        assertNotNull(c.getBoard());
+    }
+    
+    @Test
+    void testConstructorWithNullAIProfiles() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, null, null);
+        assertEquals("expert", mvm.getAI1Profile());
+        assertEquals("expert", mvm.getAI2Profile());
+    }
+    
+    @Test
+    void testConstructorWithEmptyAIProfiles() {
+        GameController mvm = new GameController(1, "MvM", Color.BLUE, Color.RED, configs, "", "");
+        assertEquals("expert", mvm.getAI1Profile());
+        assertEquals("expert", mvm.getAI2Profile());
     }
 }

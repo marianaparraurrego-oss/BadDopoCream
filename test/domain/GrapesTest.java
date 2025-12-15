@@ -28,12 +28,26 @@ public class GrapesTest {
     }
 
     @Test
+    void testPoints() {
+        assertEquals(50, grapes.getPoints());
+    }
+    
+    @Test
     public void testMove(){
         int originalX = grapes.getGridX();
         int originalY = grapes.getGridY();
         grapes.move();
         assertEquals(originalX, grapes.getGridX());
         assertEquals(originalY, grapes.getGridY());
+    }
+    
+    @Test
+    void testVisibility() {
+        assertTrue(grapes.isVisibleFruit());
+        grapes.makeInvisible();
+        assertFalse(grapes.isVisibleFruit());
+        grapes.makeVisible();
+        assertTrue(grapes.isVisibleFruit());
     }
     
 }

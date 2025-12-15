@@ -43,6 +43,16 @@ public class BananaTest {
 		banana.makeVisible();
 		assertTrue(banana.isVisibleFruit());
 	}
+	@Test
+    void testPoints() {
+        assertEquals(100, banana.getPoints());
+    }
+	@Test
+    void testMakeVisible() {
+        banana.makeInvisible();
+        banana.makeVisible();
+        assertTrue(banana.isVisibleFruit());
+    }
 	
 
 }

@@ -1,35 +1,93 @@
 package domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.awt.Color;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.*;
+import java.awt.Color;
 
-public class HungryAITest {
-
+class HungryAITest {
+    
+    private HungryAI hungryAI;
+    private Board board;
+    
+    @BeforeEach
+    void setUp() {
+        hungryAI = new HungryAI(5, 5, Color.BLUE);
+        board = new Board();
+        board.level1(Color.BLUE, Color.RED, false);
+        hungryAI.setBoard(board);
+    }
+    
     @Test
-    void hungryAISeInicializaCorrectamente() {
-        HungryAI ai = new HungryAI(2, 3, Color.ORANGE);
-
-        assertEquals(2, ai.getGridX());
+    void testConstructor() {
+        assertEquals(5, hungryAI.getGridX());
+        assertEquals(5, hungryAI.getGridY());
+        assertEquals(Color.BLUE, hungryAI.getColor());
+        assertEquals("hungry", hungryAI.getProfile());
+    }
+    
+    @Test
+    void testMakeDecisionWithNullBoard() {
+        HungryAI ai = new HungryAI(3, 3, Color.RED);
+        ai.makeDecision();
+        assertEquals(3, ai.getGridX());
         assertEquals(3, ai.getGridY());
-        assertEquals("hungry", ai.getProfile());
     }
-
+    
     @Test
-    void makeDecision_sinBoard_noFalla() {
-        HungryAI ai = new HungryAI(1, 1, Color.BLUE);
-
-        assertDoesNotThrow(ai::makeDecision);
+    void testMakeDecisionWithBoard() {
+        board.addFruit(new Banana(10, 10));
+        hungryAI.makeDecision();
+        assertNotNull(hungryAI);
     }
-
+    
     @Test
-    void makeDecision_conBoardSinFrutas_noLanzaExcepcion() {
-        HungryAI ai = new HungryAI(1, 1, Color.GREEN);
-        Board board = new Board(); // board real
-
-        ai.setBoard(board);
-
-        assertDoesNotThrow(ai::makeDecision);
+    void testMakeDecisionNoFruits() {
+        board.getFruits().clear();
+        int x = hungryAI.getGridX();
+        int y = hungryAI.getGridY();
+        hungryAI.makeDecision();
+        assertNotNull(hungryAI);
+    }
+    
+    @Test
+    void testMakeDecisionMultipleTimes() {
+        board.addFruit(new Banana(8, 8));
+        for (int i = 0; i < 10; i++) {
+            hungryAI.makeDecision();
+        }
+        assertNotNull(hungryAI);
+    }
+    
+    @Test
+    void testGetProfile() {
+        assertEquals("hungry", hungryAI.getProfile());
+    }
+    
+    @Test
+    void testSetBoard() {
+        Board newBoard = new Board();
+        newBoard.level2(Color.GREEN, Color.YELLOW, false);
+        hungryAI.setBoard(newBoard);
+        assertNotNull(hungryAI.board);
+    }
+    
+    @Test
+    void testInheritsFromIceCreamAI() {
+        assertTrue(hungryAI instanceof IceCreamAI);
+        assertTrue(hungryAI instanceof IceCream);
+    }
+    
+    @Test
+    void testShootIfPossible() {
+        hungryAI.shootIfPossible();
+        assertNotNull(hungryAI);
+    }
+    
+    @Test
+    void testMakeDecisionWithFruitNearby() {
+        board.addFruit(new Grapes(6, 5));
+        hungryAI.makeDecision();
+        assertNotNull(hungryAI);
     }
 }
